@@ -1,0 +1,1308 @@
+{
+  "save_1764295721037": {
+    "discovery_1764295844490": {
+      "id": "discovery_1764295844490",
+      "name": "5-1",
+      "molecule": {
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "circle",
+            "x": 0,
+            "y": 1
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "circle",
+            "x": 0,
+            "y": -1
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "circle",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id": "p3",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "p4",
+            "polarity": "-",
+            "type": "circle",
+            "x": -1,
+            "y": 0
+          }
+        ],
+        "bonds": [
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p3"
+          }
+        ]
+      },
+      "formula": "C⁴P",
+      "discovered_at": "2025-11-27T23:10:44.490732"
+    },
+    "discovery_1764295908072": {
+      "id": "discovery_1764295908072",
+      "name": "7-1",
+      "molecule": {
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "circle",
+            "x": 0,
+            "y": 1
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "circle",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id": "p2",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "circle",
+            "x": -1,
+            "y": 0
+          },
+          {
+            "id": "p4",
+            "polarity": "-",
+            "type": "square",
+            "x": 2,
+            "y": -1
+          },
+          {
+            "id": "p5",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 1,
+            "y": -1
+          },
+          {
+            "id": "p6",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 0,
+            "y": -1
+          }
+        ],
+        "bonds": [
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 2,
+            "to": "p5"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 2,
+            "to": "p6"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p6"
+          }
+        ]
+      },
+      "formula": "C³QTP²",
+      "discovered_at": "2025-11-27T23:11:48.072597"
+    },
+    "discovery_1764299112917": {
+      "id": "discovery_1764299112917",
+      "name": "5-2",
+      "molecule": {
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id": "p1",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "square",
+            "x": 1,
+            "y": 1
+          },
+          {
+            "id": "p3",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 0,
+            "y": 1
+          },
+          {
+            "id": "p4",
+            "polarity": "-",
+            "type": "triangle",
+            "x": -1,
+            "y": 0
+          }
+        ],
+        "bonds": [
+          {
+            "from": "p0",
+            "multiplicity": 3,
+            "to": "p1"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 2,
+            "to": "p3"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 2,
+            "to": "p4"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p4"
+          }
+        ]
+      },
+      "formula": "QT²P²",
+      "discovered_at": "2025-11-28T00:05:12.917098"
+    },
+    "discovery_1764300245500": {
+      "id": "discovery_1764300245500",
+      "name": "4-11",
+      "molecule": {
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "square",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id": "p1",
+            "polarity": "+",
+            "type": "triangle",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "p2",
+            "polarity": "+",
+            "type": "triangle",
+            "x": 0,
+            "y": 1
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "pentagon",
+            "x": -1,
+            "y": 0
+          }
+        ],
+        "bonds": [
+          {
+            "from": "p0",
+            "multiplicity": 2,
+            "to": "p1"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 3,
+            "to": "p3"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p3"
+          }
+        ]
+      },
+      "formula": "QT²P",
+      "discovered_at": "2025-11-28T00:24:05.500559"
+    },
+    "discovery_1764300534315": {
+      "id": "discovery_1764300534315",
+      "name": "Descoberta 5",
+      "molecule": {
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "+",
+            "type": "triangle",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "p1",
+            "polarity": "+",
+            "type": "triangle",
+            "x": 2,
+            "y": 0
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "pentagon",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "circle",
+            "x": -1,
+            "y": 0
+          },
+          {
+            "id": "p4",
+            "polarity": "-",
+            "type": "pentagon",
+            "x": 0,
+            "y": 1
+          },
+          {
+            "id": "p5",
+            "polarity": "+",
+            "type": "triangle",
+            "x": 1,
+            "y": 1
+          }
+        ],
+        "bonds": [
+          {
+            "from": "p1",
+            "multiplicity": 3,
+            "to": "p2"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 3,
+            "to": "p5"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p4"
+          }
+        ]
+      },
+      "formula": "CT³P²",
+      "discovered_at": "2025-11-28T00:28:54.315991"
+    },
+    "discovery_1764300928763": {
+      "id": "discovery_1764300928763",
+      "name": "Descoberta 6",
+      "molecule": {
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "circle",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id": "p1",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "circle",
+            "x": -1,
+            "y": 0
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "square",
+            "x": 2,
+            "y": 1
+          },
+          {
+            "id": "p4",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 1,
+            "y": 1
+          },
+          {
+            "id": "p5",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 0,
+            "y": 1
+          },
+          {
+            "id": "p6",
+            "polarity": "-",
+            "type": "square",
+            "x": 2,
+            "y": -1
+          },
+          {
+            "id": "p7",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 1,
+            "y": -1
+          },
+          {
+            "id": "p8",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 0,
+            "y": -1
+          }
+        ],
+        "bonds": [
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p1"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p1"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 2,
+            "to": "p4"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 2,
+            "to": "p5"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p6",
+            "multiplicity": 2,
+            "to": "p7"
+          },
+          {
+            "from": "p7",
+            "multiplicity": 2,
+            "to": "p8"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p8"
+          }
+        ]
+      },
+      "formula": "C²Q²T²P³",
+      "discovered_at": "2025-11-28T00:35:28.763946"
+    }
+  },
+  "save_573da8ea": {
+    "disc_62f34329": {
+      "id": "disc_62f34329",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p3"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "+",
+            "type": "circle",
+            "x": -2,
+            "y": 0
+          },
+          {
+            "id": "p1",
+            "polarity": "+",
+            "type": "circle",
+            "x": 0,
+            "y": -2
+          },
+          {
+            "id": "p2",
+            "polarity": "+",
+            "type": "circle",
+            "x": 2,
+            "y": 0
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "pentagon",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "p4",
+            "polarity": "+",
+            "type": "circle",
+            "x": 0,
+            "y": 2
+          }
+        ]
+      },
+      "formula": "C⁴P",
+      "name": "5-1",
+      "discovered_at": "2025-11-28T10:51:00.549267"
+    },
+    "disc_bca5194f": {
+      "id": "disc_bca5194f",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 2,
+            "to": "p6"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p4"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "+",
+            "type": "circle",
+            "x": -2.857142857142857,
+            "y": 0.5714285714285714
+          },
+          {
+            "id": "p1",
+            "polarity": "+",
+            "type": "circle",
+            "x": 1.1428571428571428,
+            "y": 0.5714285714285714
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "pentagon",
+            "x": -0.8571428571428572,
+            "y": 0.5714285714285714
+          },
+          {
+            "id": "p3",
+            "polarity": "+",
+            "type": "circle",
+            "x": -0.8571428571428572,
+            "y": 2.571428571428571
+          },
+          {
+            "id": "p4",
+            "polarity": "+",
+            "type": "square",
+            "x": -0.8571428571428572,
+            "y": -1.4285714285714286
+          },
+          {
+            "id": "p5",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 1.1428571428571428,
+            "y": -1.4285714285714286
+          },
+          {
+            "id": "p6",
+            "polarity": "+",
+            "type": "square",
+            "x": 3.142857142857143,
+            "y": -1.4285714285714286
+          }
+        ]
+      },
+      "formula": "C³Q²TP",
+      "name": "7-1",
+      "discovered_at": "2025-11-28T10:51:49.346017"
+    },
+    "disc_4523e690": {
+      "id": "disc_4523e690",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p1"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p1"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 2,
+            "to": "p3"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 2,
+            "to": "p6"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 2,
+            "to": "p6"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "+",
+            "type": "circle",
+            "x": -1.1428571428571428,
+            "y": -0.2857142857142857
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "pentagon",
+            "x": 0.8571428571428572,
+            "y": -0.2857142857142857
+          },
+          {
+            "id": "p2",
+            "polarity": "+",
+            "type": "circle",
+            "x": 2.857142857142857,
+            "y": -0.2857142857142857
+          },
+          {
+            "id": "p3",
+            "polarity": "+",
+            "type": "square",
+            "x": 0.8571428571428572,
+            "y": 1.7142857142857144
+          },
+          {
+            "id": "p4",
+            "polarity": "+",
+            "type": "square",
+            "x": -1.1428571428571428,
+            "y": -0.2857142857142857
+          },
+          {
+            "id": "p5",
+            "polarity": "+",
+            "type": "square",
+            "x": -1.1428571428571428,
+            "y": -0.2857142857142857
+          },
+          {
+            "id": "p6",
+            "polarity": "-",
+            "type": "pentagon",
+            "x": -1.1428571428571428,
+            "y": -0.2857142857142857
+          }
+        ]
+      },
+      "formula": "C²Q³P²",
+      "name": "Descoberta #1",
+      "discovered_at": "2025-11-28T10:57:51.449672"
+    },
+    "disc_74107744": {
+      "id": "disc_74107744",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 2,
+            "to": "p1"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 2,
+            "to": "p4"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p4"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "+",
+            "type": "square",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "p1",
+            "polarity": "+",
+            "type": "square",
+            "x": 4,
+            "y": 0
+          },
+          {
+            "id": "p2",
+            "polarity": "+",
+            "type": "square",
+            "x": -4,
+            "y": 0
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 2,
+            "y": 0
+          },
+          {
+            "id": "p4",
+            "polarity": "-",
+            "type": "triangle",
+            "x": -2,
+            "y": 0
+          }
+        ]
+      },
+      "formula": "Q³T²",
+      "name": "Descoberta #2",
+      "discovered_at": "2025-11-28T11:40:54.144288"
+    },
+    "disc_f113e4cc": {
+      "id": "disc_f113e4cc",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p4",
+            "multiplicity": 2,
+            "to": "p3"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 1,
+            "to": "p0"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 1,
+            "to": "p5"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "circle",
+            "x": -2.3333333333333335,
+            "y": 0.3333333333333333
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "circle",
+            "x": 1.6666666666666665,
+            "y": 0.3333333333333333
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "circle",
+            "x": -0.3333333333333335,
+            "y": 2.3333333333333335
+          },
+          {
+            "id": "p3",
+            "polarity": "+",
+            "type": "square",
+            "x": 1.6666666666666665,
+            "y": -1.6666666666666667
+          },
+          {
+            "id": "p4",
+            "polarity": "-",
+            "type": "triangle",
+            "x": -0.3333333333333335,
+            "y": -1.6666666666666667
+          },
+          {
+            "id": "p5",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": -0.3333333333333335,
+            "y": 0.3333333333333333
+          }
+        ]
+      },
+      "formula": "C³QTP",
+      "name": "Descoberta #3",
+      "discovered_at": "2025-11-28T11:51:30.895106"
+    },
+    "disc_56686991": {
+      "id": "disc_56686991",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p4"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 2,
+            "to": "p3"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 1,
+            "to": "p2"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "circle",
+            "x": -4,
+            "y": -0.3333333333333333
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "circle",
+            "x": 4,
+            "y": -0.3333333333333333
+          },
+          {
+            "id": "p2",
+            "polarity": "+",
+            "type": "square",
+            "x": -2,
+            "y": -0.3333333333333333
+          },
+          {
+            "id": "p3",
+            "polarity": "+",
+            "type": "square",
+            "x": 0,
+            "y": 1.6666666666666667
+          },
+          {
+            "id": "p4",
+            "polarity": "+",
+            "type": "square",
+            "x": 2,
+            "y": -0.3333333333333333
+          },
+          {
+            "id": "p5",
+            "polarity": "-",
+            "type": "pentagon",
+            "x": 0,
+            "y": -0.3333333333333333
+          }
+        ]
+      },
+      "formula": "C²Q³P",
+      "name": "Descoberta #4",
+      "discovered_at": "2025-11-28T11:51:45.322016"
+    },
+    "disc_39bf8a5e": {
+      "id": "disc_39bf8a5e",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p1",
+            "multiplicity": 2,
+            "to": "p0"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 3,
+            "to": "p2"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 1,
+            "to": "p1"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "+",
+            "type": "square",
+            "x": -3,
+            "y": 0
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "triangle",
+            "x": -1,
+            "y": 0
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 3,
+            "y": 0
+          },
+          {
+            "id": "p3",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 1,
+            "y": 0
+          }
+        ]
+      },
+      "formula": "QT²P",
+      "name": "Descoberta #5",
+      "discovered_at": "2025-11-28T11:52:33.585393"
+    },
+    "disc_45cdd5e1": {
+      "id": "disc_45cdd5e1",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p4"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 2,
+            "to": "p3"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p5"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "+",
+            "type": "circle",
+            "x": -3,
+            "y": -1
+          },
+          {
+            "id": "p1",
+            "polarity": "+",
+            "type": "circle",
+            "x": 1,
+            "y": -1
+          },
+          {
+            "id": "p2",
+            "polarity": "+",
+            "type": "square",
+            "x": -1,
+            "y": 1
+          },
+          {
+            "id": "p3",
+            "polarity": "+",
+            "type": "square",
+            "x": 3,
+            "y": 1
+          },
+          {
+            "id": "p4",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 1,
+            "y": 1
+          },
+          {
+            "id": "p5",
+            "polarity": "-",
+            "type": "triangle",
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      "formula": "C²Q²T²",
+      "name": "Descoberta #6",
+      "discovered_at": "2025-11-28T11:52:48.824370"
+    },
+    "disc_871adc3a": {
+      "id": "disc_871adc3a",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p4"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 2,
+            "to": "p2"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 2,
+            "to": "p3"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p5"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "+",
+            "type": "circle",
+            "x": -3,
+            "y": -1
+          },
+          {
+            "id": "p1",
+            "polarity": "+",
+            "type": "square",
+            "x": -1,
+            "y": 1
+          },
+          {
+            "id": "p2",
+            "polarity": "+",
+            "type": "square",
+            "x": 3,
+            "y": 1
+          },
+          {
+            "id": "p3",
+            "polarity": "+",
+            "type": "square",
+            "x": 1,
+            "y": -1
+          },
+          {
+            "id": "p4",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 1,
+            "y": 1
+          },
+          {
+            "id": "p5",
+            "polarity": "-",
+            "type": "pentagon",
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      "formula": "CQ³TP",
+      "name": "Descoberta #7",
+      "discovered_at": "2025-11-28T11:53:11.761576"
+    },
+    "disc_849f1dc0": {
+      "id": "disc_849f1dc0",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p4"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p4"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 1,
+            "to": "p4"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "circle",
+            "x": -2,
+            "y": 0
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "circle",
+            "x": 2,
+            "y": 0
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "circle",
+            "x": 0,
+            "y": 2
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "circle",
+            "x": 0,
+            "y": -2
+          },
+          {
+            "id": "p4",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 0,
+            "y": 0
+          }
+        ]
+      },
+      "formula": "C⁴P",
+      "name": "Descoberta #8",
+      "discovered_at": "2025-11-28T11:54:14.095129"
+    },
+    "disc_09e34a5f": {
+      "id": "disc_09e34a5f",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p4",
+            "multiplicity": 2,
+            "to": "p1"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p4"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 2,
+            "to": "p5"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 2,
+            "to": "p3"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 1,
+            "to": "p4"
+          }
+        ],
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "circle",
+            "x": -3,
+            "y": -1
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "square",
+            "x": 1,
+            "y": -1
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "square",
+            "x": 3,
+            "y": 1
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "triangle",
+            "x": -1,
+            "y": 1
+          },
+          {
+            "id": "p4",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": -1,
+            "y": -1
+          },
+          {
+            "id": "p5",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 1,
+            "y": 1
+          }
+        ]
+      },
+      "formula": "CQ²TP²",
+      "name": "Descoberta #9",
+      "discovered_at": "2025-11-28T11:55:30.058644"
+    }
+  }
+}
