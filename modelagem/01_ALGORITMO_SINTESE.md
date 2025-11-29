@@ -521,3 +521,4 @@ Rebond não conseguiu estabilizar
 
 **Implementação**: `backend/core/synthesis.py`
 
+

@@ -12,6 +12,8 @@ from data.molecules import (
 )
 from core.synthesis import synthesize
 from core.validator import validate_molecule
+from core.generator import generate_molecules
+from core.analyzer import get_molecule_properties
 from data.synthesis_results import (
     get_synthesis_result,
     save_synthesis_result,
@@ -399,6 +401,54 @@ def api_delete_save(save_id):
         }), 404
 
 # ============================================
+# SIMULATION ROUTES
+# ============================================
+
+@app.route('/api/simulate', methods=['POST'])
+def api_simulate():
+    """
+    Gera todas as moléculas possíveis com um tipo de partícula e massa específicos.
+    
+    Body: {
+        'particle_type': int (1, 2, 3, 4),
+        'mass': int
+    }
+    """
+    data = request.json
+    particle_type = data.get('particle_type')
+    target_mass = data.get('mass')
+    
+    if particle_type is None or target_mass is None:
+        return jsonify({
+            'success': False,
+            'error': 'Parâmetros particle_type e mass são obrigatórios'
+        }), 400
+    
+    # Validar inputs (0 = qualquer tipo)
+    if particle_type not in [0, 1, 2, 3, 4]:
+        return jsonify({
+            'success': False,
+            'error': 'particle_type deve ser 0 (qualquer), 1, 2, 3 ou 4'
+        }), 400
+    
+    if target_mass <= 0:
+        return jsonify({
+            'success': False,
+            'error': 'mass deve ser maior que 0'
+        }), 400
+    
+    # Gerar moléculas
+    result = generate_molecules(particle_type, target_mass)
+    
+    # Adicionar propriedades estruturais a cada molécula
+    if result['success'] and result['molecules']:
+        for molecule in result['molecules']:
+            props = get_molecule_properties(molecule)
+            molecule['properties'] = props
+    
+    return jsonify(result)
+
+# ============================================
 # WEBSOCKET EVENTS
 # ============================================
 
@@ -429,9 +479,14 @@ if __name__ == '__main__':
     print('🌐 Acesse: http://localhost:5000')
     socketio.run(app, debug=True, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
 
-   
-    
-    
-    
-    
+  
+ 
+   
+ 
+   
+ 
+   
+ 
+   
+ 
  

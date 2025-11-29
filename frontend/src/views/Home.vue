@@ -59,6 +59,12 @@
           <p>Combine moléculas para criar novas descobertas</p>
         </div>
         
+        <div class="menu-card" @click="goToSimulation">
+          <div class="card-icon">🧪</div>
+          <h2>Simulação de Moléculas</h2>
+          <p>Gere todas as moléculas possíveis com características específicas</p>
+        </div>
+        
         <div class="menu-card disabled">
           <div class="card-icon">🎮</div>
           <h2>Modo Jogo</h2>
@@ -124,6 +130,10 @@ function goToLibrary() {
 
 function goToSynthesis() {
   router.push('/synthesis')
+}
+
+function goToSimulation() {
+  router.push('/simulation')
 }
 
 function changePlayer() {

@@ -448,48 +448,186 @@ def reorganize_positions(molecule):
     """
     PASSO 4: Reorganiza posições das partículas para visualização clara
     
-    Usa BFS para distribuir partículas em 2D:
-    - Partículas ligadas ficam próximas
-    - Ramificações usam o eixo Y
-    - Evita sobreposições
+    Estratégias de layout:
+    - Detecta ciclos e os posiciona como polígonos regulares
+    - Usa BFS para estruturas em árvore/estrela
+    - Evita sobreposições e colisões
     """
     import math
     
     if not molecule['particles']:
         return
     
-    # Resetar todas as posições primeiro
-    for particle in molecule['particles']:
-        particle['x'] = 0
-        particle['y'] = 0
-    
-    # Construir grafo de adjacências
+    # Construir grafo de adjacências (usado por todas as estratégias)
     adjacency = {p['id']: [] for p in molecule['particles']}
     for bond in molecule['bonds']:
         adjacency[bond['from']].append(bond['to'])
         adjacency[bond['to']].append(bond['from'])
     
+    # ESTRATÉGIA 1: Detectar ciclos (estruturas circulares)
+    cycle = _detect_cycle(adjacency, molecule['particles'])
+    
+    if cycle:
+        # Layout circular para ciclos
+        _layout_as_polygon(molecule, cycle, adjacency)
+    else:
+        # ESTRATÉGIA 2: Layout BFS melhorado para grafos densos
+        _layout_as_tree(molecule, adjacency)
+    
+    # Otimização final: centralizar partículas com múltiplas conexões
+    _optimize_centered_particles(molecule, adjacency)
+
+
+def _detect_cycle(adjacency, particles):
+    """
+    Detecta ciclos usando DFS e retorna lista de IDs do ciclo.
+    Retorna None se não houver ciclo.
+    """
+    if len(particles) < 3:
+        return None
+    
+    visited = set()
+    parent = {}
+    
+    def dfs(node, par):
+        visited.add(node)
+        parent[node] = par
+        
+        for neighbor in adjacency[node]:
+            if neighbor not in visited:
+                cycle = dfs(neighbor, node)
+                if cycle:
+                    return cycle
+            elif neighbor != par:
+                # Ciclo encontrado - reconstruir caminho
+                cycle_nodes = [neighbor, node]
+                current = node
+                while parent[current] != neighbor and parent[current] is not None:
+                    current = parent[current]
+                    cycle_nodes.insert(1, current)
+                return cycle_nodes
+        return None
+    
+    # Tentar DFS a partir de cada partícula
+    for particle in particles:
+        if particle['id'] not in visited:
+            cycle = dfs(particle['id'], None)
+            if cycle:
+                return cycle
+    
+    return None
+
+
+def _layout_as_polygon(molecule, cycle_ids, adjacency):
+    """
+    Posiciona ciclo como polígono regular (triângulo, quadrado, pentágono, etc).
+    
+    Lógica para partículas extras:
+    - Se conecta com 1 partícula do ciclo → FORA do ciclo
+    - Se conecta com 2+ partículas do ciclo → DENTRO do ciclo
+    """
+    import math
+    
+    n = len(cycle_ids)
+    RADIUS = 3.0
+    
+    # Posicionar partículas do ciclo em círculo (coordenadas inteiras)
+    angle_step = (2 * math.pi) / n
+    for i, pid in enumerate(cycle_ids):
+        angle = i * angle_step - math.pi / 2  # Começar do topo
+        particle = next(p for p in molecule['particles'] if p['id'] == pid)
+        particle['x'] = round(RADIUS * math.cos(angle))
+        particle['y'] = round(RADIUS * math.sin(angle))
+    
+    positioned = set(cycle_ids)
+    
+    # Identificar partículas não posicionadas
+    unpositioned = [p['id'] for p in molecule['particles'] if p['id'] not in positioned]
+    
+    # Para cada partícula não posicionada
+    for pid in unpositioned:
+        # Contar conexões com o ciclo
+        connections_to_cycle = [n for n in adjacency[pid] if n in cycle_ids]
+        num_connections = len(connections_to_cycle)
+        
+        if num_connections == 0:
+            # Sem conexão com ciclo, pular (BFS vai posicionar depois)
+            continue
+        
+        if num_connections == 1:
+            # REGRA 1: Conecta com apenas 1 → colocar FORA do ciclo
+            cycle_neighbor_id = connections_to_cycle[0]
+            cycle_neighbor = next(p for p in molecule['particles'] if p['id'] == cycle_neighbor_id)
+            
+            # Direção para fora (radial)
+            angle_to_center = math.atan2(cycle_neighbor['y'], cycle_neighbor['x'])
+            
+            particle = next(p for p in molecule['particles'] if p['id'] == pid)
+            particle['x'] = round(cycle_neighbor['x'] + RADIUS * 1.2 * math.cos(angle_to_center))
+            particle['y'] = round(cycle_neighbor['y'] + RADIUS * 1.2 * math.sin(angle_to_center))
+            positioned.add(pid)
+            
+        else:
+            # REGRA 2: Conecta com 2+ → colocar DENTRO do ciclo (centro)
+            # Calcular centroide das partículas do ciclo conectadas
+            connected_particles = [
+                next(p for p in molecule['particles'] if p['id'] == cid) 
+                for cid in connections_to_cycle
+            ]
+            
+            center_x = sum(p['x'] for p in connected_particles) / len(connected_particles)
+            center_y = sum(p['y'] for p in connected_particles) / len(connected_particles)
+            
+            # Posicionar no centroide (DENTRO do ciclo)
+            particle = next(p for p in molecule['particles'] if p['id'] == pid)
+            particle['x'] = round(center_x)
+            particle['y'] = round(center_y)
+            positioned.add(pid)
+
+
+def _layout_as_tree(molecule, adjacency):
+    """
+    Layout BFS melhorado para estruturas em árvore e grafos densos.
+    Usa espaçamento adaptativo baseado no número de conexões.
+    """
+    import math
+    
+    # Resetar posições
+    for particle in molecule['particles']:
+        particle['x'] = 0
+        particle['y'] = 0
+    
+    # Encontrar partícula com mais conexões como ponto inicial
+    # Em caso de empate, usa prioridade por tipo (pentagon > triangle > square > circle)
+    type_priority = {'pentagon': 4, 'triangle': 3, 'square': 2, 'circle': 1}
+    
+    start_particle = max(
+        molecule['particles'],
+        key=lambda p: (len(adjacency[p['id']]), type_priority.get(p['type'], 0))
+    )
+    start_id = start_particle['id']
+    
     # BFS para posicionar partículas
     visited = set()
-    start_id = molecule['particles'][0]['id']
-    
-    # Fila: (id, x, y, parent_id)
     queue = [(start_id, 0, 0, None)]
     visited.add(start_id)
     
     # Mapa de posições para evitar sobreposições
     position_map = {}
     
-    # Direções expandidas para ramificações
+    # Espaçamento aumentado para grafos densos
+    BASE_SPACING = 4  # Aumentado de 2 para 4
+    
+    # Direções expandidas (coordenadas inteiras)
     directions = [
-        (2, 0),   # Direita
-        (-2, 0),  # Esquerda
-        (0, 2),   # Cima
-        (0, -2),  # Baixo
-        (1.5, 1.5),   # Diagonal SE
-        (1.5, -1.5),  # Diagonal NE
-        (-1.5, 1.5),  # Diagonal SW
-        (-1.5, -1.5), # Diagonal NW
+        (BASE_SPACING, 0),               # Direita
+        (-BASE_SPACING, 0),              # Esquerda
+        (0, BASE_SPACING),               # Cima
+        (0, -BASE_SPACING),              # Baixo
+        (BASE_SPACING, BASE_SPACING),    # Diagonal SE
+        (BASE_SPACING, -BASE_SPACING),   # Diagonal NE
+        (-BASE_SPACING, BASE_SPACING),   # Diagonal SW
+        (-BASE_SPACING, -BASE_SPACING),  # Diagonal NW
     ]
     
     while queue:
@@ -520,15 +658,15 @@ def reorganize_positions(molecule):
                 if dir_idx < len(directions):
                     dx, dy = directions[dir_idx]
                 else:
-                    # Posições circulares para muitas ramificações
+                    # Posições circulares para muitas ramificações (coordenadas inteiras)
                     angle = angle_offset * (2 * math.pi / max(len(neighbors), 8))
-                    radius = 2 + (angle_offset // 8) * 1.5
-                    dx = radius * math.cos(angle)
-                    dy = radius * math.sin(angle)
+                    radius = 2 + (angle_offset // 8) * 2
+                    dx = round(radius * math.cos(angle))
+                    dy = round(radius * math.sin(angle))
                     angle_offset += 1
                 
-                new_x = x + dx
-                new_y = y + dy
+                new_x = round(x + dx)
+                new_y = round(y + dy)
                 
                 # Verificar se posição está livre
                 if (new_x, new_y) not in position_map:
@@ -538,21 +676,76 @@ def reorganize_positions(molecule):
                     dir_idx += 1
                     attempts += 1
             
-            # Se não achou posição livre, usar qualquer uma
+            # Se não achou posição livre, usar qualquer uma (coordenadas inteiras)
             if not pos_found:
                 dx, dy = directions[dir_idx % len(directions)]
-                new_x = x + dx + (attempts * 0.3)
-                new_y = y + dy + (attempts * 0.3)
+                new_x = round(x + dx + attempts)
+                new_y = round(y + dy + attempts)
                 queue.append((neighbor_id, new_x, new_y, current_id))
             
             dir_idx += 1
     
-    # Centralizar molécula (mover para que o centro seja próximo de 0,0)
+    # Centralizar molécula (manter coordenadas inteiras)
     if molecule['particles']:
         avg_x = sum(p['x'] for p in molecule['particles']) / len(molecule['particles'])
         avg_y = sum(p['y'] for p in molecule['particles']) / len(molecule['particles'])
         
         for particle in molecule['particles']:
-            particle['x'] -= avg_x
-            particle['y'] -= avg_y
+            particle['x'] = round(particle['x'] - avg_x)
+            particle['y'] = round(particle['y'] - avg_y)
+
+
+def _optimize_centered_particles(molecule, adjacency):
+    """
+    Otimização final: centraliza partículas com 3+ conexões entre seus vizinhos.
+    Usa iterações suaves com verificação de colisão.
+    """
+    import math
+    
+    ITERATIONS = 5
+    DAMPING = 0.15
+    MIN_DISTANCE = 2.0
+    
+    for iteration in range(ITERATIONS):
+        forces = {p['id']: {'x': 0, 'y': 0} for p in molecule['particles']}
+        
+        # Calcular forças de centralização
+        for particle in molecule['particles']:
+            pid = particle['id']
+            neighbors = adjacency[pid]
+            
+            # Apenas para partículas com múltiplas conexões
+            if len(neighbors) < 3:
+                continue
+            
+            # Centroide dos vizinhos
+            center_x = sum(next(p for p in molecule['particles'] if p['id'] == nid)['x'] 
+                          for nid in neighbors) / len(neighbors)
+            center_y = sum(next(p for p in molecule['particles'] if p['id'] == nid)['y'] 
+                          for nid in neighbors) / len(neighbors)
+            
+            # Força suave em direção ao centroide
+            forces[pid]['x'] = (center_x - particle['x']) * DAMPING
+            forces[pid]['y'] = (center_y - particle['y']) * DAMPING
+        
+        # Aplicar forças com verificação de colisão (manter coordenadas inteiras)
+        for particle in molecule['particles']:
+            new_x = round(particle['x'] + forces[particle['id']]['x'])
+            new_y = round(particle['y'] + forces[particle['id']]['y'])
+            
+            # Verificar colisões
+            collision = False
+            for other in molecule['particles']:
+                if other['id'] == particle['id']:
+                    continue
+                
+                dist = math.sqrt((new_x - other['x'])**2 + (new_y - other['y'])**2)
+                if dist < MIN_DISTANCE:
+                    collision = True
+                    break
+            
+            # Aplicar movimento se seguro
+            if not collision:
+                particle['x'] = new_x
+                particle['y'] = new_y
 

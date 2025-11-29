@@ -468,3 +468,4 @@ CQ²T-iso2
 - Backend: `backend/data/molecules.py` (função `calculate_molecular_formula`)
 - Frontend: `frontend/src/services/api.js` (função `calculateMolecularFormula`)
 
+
