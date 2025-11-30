@@ -469,3 +469,4 @@ CQ²T-iso2
 - Frontend: `frontend/src/services/api.js` (função `calculateMolecularFormula`)
 
 
+

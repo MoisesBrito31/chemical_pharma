@@ -11,6 +11,10 @@ def are_molecules_identical(mol1, mol2):
     if not mol1 or not mol2:
         return False
     
+    # Verificar se são dicionários (moléculas)
+    if not isinstance(mol1, dict) or not isinstance(mol2, dict):
+        return False
+    
     # Verificar quantidade de partículas
     if len(mol1.get('particles', [])) != len(mol2.get('particles', [])):
         return False
@@ -60,4 +64,5 @@ def create_molecular_fingerprint(molecule):
     
     # 3. Combinar tudo em uma única string
     return f"{particles_signature}::{bonds_signature}"
+
 

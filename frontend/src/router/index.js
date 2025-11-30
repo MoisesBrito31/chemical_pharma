@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Game from '../views/Game.vue'
 import MoleculeLibrary from '../views/MoleculeLibrary.vue'
 import Synthesis from '../views/Synthesis.vue'
+import AutoSynthesis from '../views/AutoSynthesis.vue'
 import Simulation from '../views/Simulation.vue'
 import MoleculeBuilder from '../views/MoleculeBuilder.vue'
 import PlayerSelect from '../views/PlayerSelect.vue'
@@ -36,6 +37,12 @@ const routes = [
     path: '/synthesis',
     name: 'Synthesis',
     component: Synthesis,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/auto-synthesis',
+    name: 'AutoSynthesis',
+    component: AutoSynthesis,
     meta: { requiresAuth: true }
   },
   {

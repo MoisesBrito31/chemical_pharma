@@ -4,11 +4,20 @@
       "id": "save_4a26a3b2",
       "player_name": "moises",
       "created_at": "2025-11-30T00:02:19.153090",
-      "last_played": "2025-11-30T00:02:50.370016",
-      "money": 1100,
-      "discoveries_count": 1,
-      "syntheses_count": 0
+      "last_played": "2025-11-30T10:32:57.148619",
+      "money": 2300,
+      "discoveries_count": 13,
+      "syntheses_count": 13
+    },
+    "save_a5d419af": {
+      "id": "save_a5d419af",
+      "player_name": "teste",
+      "created_at": "2025-11-30T10:52:49.043469",
+      "last_played": "2025-11-30T12:23:40.826565",
+      "money": 5000,
+      "discoveries_count": 40,
+      "syntheses_count": 246
     }
   },
-  "active_save": "save_4a26a3b2"
+  "active_save": "save_a5d419af"
 }

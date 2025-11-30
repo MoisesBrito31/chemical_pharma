@@ -74,6 +74,12 @@
         >
           <div class="molecule-header">
             <span class="molecule-index">#{{ index + 1 }}</span>
+            <span 
+              v-if="molecule.status" 
+              :class="['status-badge', getStatusClass(molecule.status)]"
+            >
+              {{ molecule.status }}
+            </span>
           </div>
           
           <div class="molecule-viewer-container">
@@ -108,6 +114,18 @@
               </span>
             </div>
           </div>
+          
+          <!-- Botão para salvar molécula desconhecida -->
+          <div v-if="molecule.status === 'Desconhecida'" class="molecule-actions">
+            <button 
+              @click.stop="saveDiscovery(molecule, index)"
+              :disabled="savingIndex === index"
+              class="btn-save-discovery"
+            >
+              <span v-if="savingIndex !== index">💾 Salvar na Biblioteca</span>
+              <span v-else>⏳ Salvando...</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -123,6 +141,7 @@
 <script>
 import { ref, computed } from 'vue';
 import MoleculeViewer from '../components/MoleculeViewer.vue';
+import { saveDiscovery as saveDiscoveryAPI, calculateMolecularFormula } from '../services/api.js';
 
 export default {
   name: 'Simulation',
@@ -135,6 +154,7 @@ export default {
     const isLoading = ref(false);
     const error = ref(null);
     const results = ref(null);
+    const savingIndex = ref(null);
 
     const isValid = computed(() => {
       return particleType.value >= 0 && 
@@ -232,18 +252,57 @@ export default {
       return labels[topology] || topology;
     };
 
+    const getStatusClass = (status) => {
+      const classes = {
+        'Base': 'base',
+        'Descoberta': 'discovered',
+        'Desconhecida': 'unknown'
+      };
+      return classes[status] || 'unknown';
+    };
+
+    const saveDiscovery = async (molecule, index) => {
+      if (savingIndex.value !== null) return; // Já está salvando algo
+      
+      savingIndex.value = index;
+      
+      try {
+        // Calcular fórmula molecular
+        const formula = calculateMolecularFormula(molecule);
+        
+        // Salvar descoberta
+        const response = await saveDiscoveryAPI(molecule, formula);
+        
+        if (response.success) {
+          // Atualizar o status da molécula na lista
+          if (results.value && results.value.molecules) {
+            results.value.molecules[index].status = 'Descoberta';
+            results.value.molecules[index].is_discovered = true;
+            results.value.molecules[index].is_known = true;
+          }
+        }
+      } catch (err) {
+        console.error('Erro ao salvar descoberta:', err);
+      } finally {
+        savingIndex.value = null;
+      }
+    };
+
     return {
       particleType,
       targetMass,
       isLoading,
       error,
       results,
+      savingIndex,
       isValid,
       generateMolecules,
       calculateCharge,
       getChargeClass,
       showMoleculeJson,
-      getTopologyLabel
+      getTopologyLabel,
+      getStatusClass,
+      saveDiscovery
     };
   }
 };
@@ -412,7 +471,9 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .molecule-index {
@@ -422,6 +483,28 @@ export default {
   border-radius: 20px;
   font-weight: 600;
   font-size: 0.9rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.status-badge.base {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.status-badge.discovered {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.status-badge.unknown {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
 }
 
 .molecule-viewer-container {
@@ -527,6 +610,35 @@ export default {
 .loading-state p {
   color: #7f8c8d;
   font-size: 1.1rem;
+}
+
+.molecule-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn-save-discovery {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-save-discovery:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-save-discovery:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>
 

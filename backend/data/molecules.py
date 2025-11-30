@@ -265,6 +265,68 @@ MOLECULES_DATABASE = {
                 {'from': 'p2', 'to': 'p3', 'multiplicity': 1}
             ]
         },
+        {
+            'id': 'm4_11',
+            'name': 'Molécula 4-11',
+            'particles': [
+                {'id': 'p0', 'type': 'pentagon', 'polarity': '+', 'x': -2, 'y': 0},
+                {'id': 'p1', 'type': 'square', 'polarity': '+', 'x': 6, 'y': 0},
+                {'id': 'p2', 'type': 'triangle', 'polarity': '-', 'x': 2, 'y': 0},
+                {'id': 'p3', 'type': 'triangle', 'polarity': '-', 'x': -6, 'y': 0}
+            ],
+            'bonds': [
+                {'from': 'p0', 'to': 'p2', 'multiplicity': 1},
+                {'from': 'p0', 'to': 'p3', 'multiplicity': 3},
+                {'from': 'p1', 'to': 'p2', 'multiplicity': 2}
+            ]
+        },
+        {
+            'id': 'm4_12',
+            'name': 'Molécula 4-12',
+            'particles': [
+                {'id': 'p0', 'type': 'pentagon', 'polarity': '+', 'x': 0, 'y': -3},
+                {'id': 'p1', 'type': 'square', 'polarity': '+', 'x': 0, 'y': 3},
+                {'id': 'p2', 'type': 'triangle', 'polarity': '-', 'x': 3, 'y': 0},
+                {'id': 'p3', 'type': 'triangle', 'polarity': '-', 'x': -3, 'y': 0}
+            ],
+            'bonds': [
+                {'from': 'p0', 'to': 'p2', 'multiplicity': 2},
+                {'from': 'p0', 'to': 'p3', 'multiplicity': 2},
+                {'from': 'p1', 'to': 'p2', 'multiplicity': 1},
+                {'from': 'p1', 'to': 'p3', 'multiplicity': 1}
+            ]
+        },
+        {
+            'id': 'm4_13',
+            'name': 'Molécula 4-13',
+            'particles': [
+                {'id': 'p0', 'type': 'pentagon', 'polarity': '-', 'x': -2, 'y': 0},
+                {'id': 'p1', 'type': 'square', 'polarity': '-', 'x': 6, 'y': 0},
+                {'id': 'p2', 'type': 'triangle', 'polarity': '+', 'x': 2, 'y': 0},
+                {'id': 'p3', 'type': 'triangle', 'polarity': '+', 'x': -6, 'y': 0}
+            ],
+            'bonds': [
+                {'from': 'p0', 'to': 'p2', 'multiplicity': 1},
+                {'from': 'p0', 'to': 'p3', 'multiplicity': 3},
+                {'from': 'p1', 'to': 'p2', 'multiplicity': 2}
+            ]
+        },
+        {
+            'id': 'm4_14',
+            'name': 'Molécula 4-14',
+            'particles': [
+                {'id': 'p0', 'type': 'pentagon', 'polarity': '-', 'x': 0, 'y': -3},
+                {'id': 'p1', 'type': 'square', 'polarity': '-', 'x': 0, 'y': 3},
+                {'id': 'p2', 'type': 'triangle', 'polarity': '+', 'x': 3, 'y': 0},
+                {'id': 'p3', 'type': 'triangle', 'polarity': '+', 'x': -3, 'y': 0}
+            ],
+            'bonds': [
+                {'from': 'p0', 'to': 'p2', 'multiplicity': 2},
+                {'from': 'p0', 'to': 'p3', 'multiplicity': 2},
+                {'from': 'p1', 'to': 'p2', 'multiplicity': 1},
+                {'from': 'p1', 'to': 'p3', 'multiplicity': 1}
+            ]
+        },
         
     ],
     5: [],

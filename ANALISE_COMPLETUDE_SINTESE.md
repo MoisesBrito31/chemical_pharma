@@ -151,3 +151,4 @@ O viés de priorização de conexões maiores **PODE atrapalhar** a mecânica de
 
 **Porém**, através de múltiplas tentativas e diferentes caminhos de síntese, muitas moléculas ainda são alcançáveis. O sistema não é **completo** (não garante todas as moléculas), mas é **suficientemente explorável** para a maioria dos casos práticos.
 
+

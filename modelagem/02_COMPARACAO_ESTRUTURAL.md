@@ -458,3 +458,4 @@ Com comparação estrutural: "Já conhecida!" ✓
 **Implementação**: `frontend/src/utils/moleculeComparison.js`
 
 
+

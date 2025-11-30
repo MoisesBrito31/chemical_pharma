@@ -59,6 +59,12 @@
           <p>Combine moléculas para criar novas descobertas</p>
         </div>
         
+        <div class="menu-card" @click="goToAutoSynthesis">
+          <div class="card-icon">🔬</div>
+          <h2>Síntese Automática</h2>
+          <p>Teste múltiplas sínteses de uma vez com uma molécula base</p>
+        </div>
+        
         <div class="menu-card" @click="goToSimulation">
           <div class="card-icon">🧪</div>
           <h2>Simulação de Moléculas</h2>
@@ -136,6 +142,10 @@ function goToLibrary() {
 
 function goToSynthesis() {
   router.push('/synthesis')
+}
+
+function goToAutoSynthesis() {
+  router.push('/auto-synthesis')
 }
 
 function goToSimulation() {

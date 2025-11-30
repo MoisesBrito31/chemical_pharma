@@ -16,6 +16,7 @@ from core.validator import validate_molecule
 from core.generator import generate_molecules
 from core.analyzer import get_molecule_properties
 from core.molecule_analyzer import analyze_molecule_structure
+from core.molecule_comparison import are_molecules_identical
 from data.synthesis_results import (
     get_synthesis_result,
     save_synthesis_result,
@@ -211,6 +212,162 @@ def api_clear_synthesis_cache():
     return jsonify({
         'success': True,
         'message': 'Cache de sínteses limpo com sucesso'
+    })
+
+@app.route('/api/synthesis/auto', methods=['POST'])
+def api_auto_synthesis():
+    """
+    Realiza sínteses automáticas entre uma molécula e um grupo de moléculas.
+    
+    Body: {
+        'molecule_a_id': str,  # ID da molécula base
+        'molecule_ids': [str] | null,  # Lista de IDs ou null para filtrar por massa
+        'filter_mass': int | null  # Se fornecido, filtra moléculas por esta massa
+    }
+    """
+    data = request.json
+    mol_a_id = data.get('molecule_a_id')
+    molecule_ids = data.get('molecule_ids')  # Lista específica de IDs
+    filter_mass = data.get('filter_mass')  # Filtrar por massa
+    
+    if not mol_a_id:
+        return jsonify({
+            'success': False,
+            'error': 'ID da molécula A é obrigatório'
+        }), 400
+    
+    # Buscar molécula A
+    molecule_a = find_molecule(mol_a_id)
+    if not molecule_a:
+        return jsonify({
+            'success': False,
+            'error': f'Molécula A ({mol_a_id}) não encontrada'
+        }), 404
+    
+    # Determinar lista de moléculas B
+    molecules_b = []
+    
+    if molecule_ids:
+        # Usar lista específica fornecida
+        for mol_id in molecule_ids:
+            mol_b = find_molecule(mol_id)
+            if mol_b:
+                molecules_b.append(mol_b)
+    elif filter_mass:
+        # Filtrar por massa
+        molecules_by_mass = get_molecules_by_mass(filter_mass)
+        molecules_b = molecules_by_mass.copy()
+        
+        # Adicionar descobertas da mesma massa
+        save_id = get_active_save_id()
+        if save_id:
+            discoveries = get_all_discoveries(save_id)
+            for disc in discoveries:
+                mol = disc.get('molecule')
+                if mol and len(mol.get('particles', [])) == filter_mass:
+                    molecules_b.append(mol)
+    else:
+        return jsonify({
+            'success': False,
+            'error': 'É necessário fornecer molecule_ids ou filter_mass'
+        }), 400
+    
+    if not molecules_b:
+        return jsonify({
+            'success': False,
+            'error': 'Nenhuma molécula encontrada para síntese'
+        }), 404
+    
+    # Realizar todas as sínteses
+    results = []
+    known_molecules = get_all_molecules()
+    save_id = get_active_save_id()
+    discovered_molecules = []
+    if save_id:
+        discoveries = get_all_discoveries(save_id)
+        discovered_molecules = [d.get('molecule') for d in discoveries if d.get('molecule')]
+    
+    all_known_molecules = known_molecules + discovered_molecules
+    
+    for mol_b in molecules_b:
+        mol_b_id = mol_b.get('id', 'unknown')
+        
+        # Cache key para verificar resultado já calculado
+        cache_key = f"{mol_a_id}+{mol_b_id}"
+        cached = get_synthesis_result(cache_key)
+        
+        if cached:
+            result = cached
+        else:
+            # Realizar síntese
+            result = synthesize(molecule_a, mol_b)
+            save_synthesis_result(cache_key, result)
+        
+        # Determinar status do resultado (se houver)
+        result_status = None
+        if result.get('success'):
+            result_molecule = result.get('result')
+            is_multiple = result.get('multiple', False)
+            
+            if result_molecule:
+                # Se for resultado múltiplo, a lista contém várias moléculas
+                # Para múltiplas, não definimos status único (cada uma teria seu próprio)
+                if is_multiple and isinstance(result_molecule, list):
+                    # Resultado múltiplo - não definir status único
+                    result_status = None
+                elif not is_multiple and isinstance(result_molecule, dict):
+                    # Resultado único - verificar status
+                    # Verificar se é conhecida (base)
+                    is_base = False
+                    for base_mol in known_molecules:
+                        if are_molecules_identical(result_molecule, base_mol):
+                            is_base = True
+                            break
+                    
+                    # Verificar se já foi descoberta
+                    is_discovered = False
+                    if not is_base:
+                        for disc_mol in discovered_molecules:
+                            if are_molecules_identical(result_molecule, disc_mol):
+                                is_discovered = True
+                                break
+                    
+                    if is_base:
+                        result_status = 'Base'
+                    elif is_discovered:
+                        result_status = 'Descoberta'
+                    else:
+                        result_status = 'Desconhecida'
+        
+        results.append({
+            'molecule_b': {
+                'id': mol_b_id,
+                'formula': calculate_molecule_properties(mol_b).get('formula', '?'),
+                'mass': len(mol_b.get('particles', [])),
+                'molecule': copy.deepcopy(mol_b)  # Incluir molécula completa
+            },
+            'result': result,
+            'status': result_status
+        })
+    
+    # Incrementar contador de sínteses bem-sucedidas
+    successful_count = sum(1 for r in results if r['result'].get('success'))
+    if successful_count > 0:
+        save_id = get_active_save_id()
+        if save_id:
+            update_save_stats(save_id, syntheses_increment=successful_count)
+    
+    return jsonify({
+        'success': True,
+        'molecule_a': {
+            'id': mol_a_id,
+            'formula': calculate_molecule_properties(molecule_a).get('formula', '?'),
+            'mass': len(molecule_a.get('particles', [])),
+            'molecule': copy.deepcopy(molecule_a)  # Incluir molécula completa
+        },
+        'total_tested': len(results),
+        'total_successful': successful_count,
+        'results': results
     })
 
 # ============================================
@@ -456,11 +613,53 @@ def api_simulate():
     # Gerar moléculas
     result = generate_molecules(particle_type, target_mass)
     
-    # Adicionar propriedades estruturais a cada molécula
+    # Buscar todas as moléculas conhecidas do banco de dados base
+    known_molecules = get_all_molecules()
+    
+    # Buscar todas as descobertas do save ativo
+    save_id = get_active_save_id()
+    discovered_molecules = []
+    if save_id:
+        discoveries = get_all_discoveries(save_id)
+        discovered_molecules = [d.get('molecule') for d in discoveries if d.get('molecule')]
+    
+    # Adicionar propriedades estruturais e verificar status de cada molécula
     if result['success'] and result['molecules']:
         for molecule in result['molecules']:
             props = get_molecule_properties(molecule)
             molecule['properties'] = props
+            
+            # Verificar se a molécula está no banco de dados base
+            is_base = False
+            for base_mol in known_molecules:
+                if are_molecules_identical(molecule, base_mol):
+                    is_base = True
+                    break
+            
+            # Verificar se a molécula já foi descoberta pelo jogador
+            is_discovered = False
+            if not is_base:
+                for disc_mol in discovered_molecules:
+                    if are_molecules_identical(molecule, disc_mol):
+                        is_discovered = True
+                        break
+            
+            # Definir status
+            if is_base:
+                molecule['status'] = 'Base'
+                molecule['is_known'] = True
+                molecule['is_base'] = True
+                molecule['is_discovered'] = False
+            elif is_discovered:
+                molecule['status'] = 'Descoberta'
+                molecule['is_known'] = True
+                molecule['is_base'] = False
+                molecule['is_discovered'] = True
+            else:
+                molecule['status'] = 'Desconhecida'
+                molecule['is_known'] = False
+                molecule['is_base'] = False
+                molecule['is_discovered'] = False
     
     return jsonify(result)
 
