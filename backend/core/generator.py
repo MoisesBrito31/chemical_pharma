@@ -81,8 +81,11 @@ def generate_molecules(particle_type, target_mass):
     attempted_count = 0
     
     for types_combo in type_combinations:
-        # Gerar combinações de polaridades
-        polarity_combinations = generate_polarity_combinations(num_particles)
+        # Gerar combinações de polaridades que respeitam a regra de mesmo tipo
+        polarity_combinations = generate_polarity_combinations(
+            num_particles, 
+            particle_types=list(types_combo)
+        )
         
         for polarities in polarity_combinations:
             # Criar partículas
@@ -143,28 +146,58 @@ def generate_molecules(particle_type, target_mass):
     }
 
 
-def generate_polarity_combinations(num_particles):
+def _respects_same_type_polarity_rule(particle_types, polarities):
     """
-    Gera TODAS as combinações possíveis de polaridades para N partículas.
+    Verifica se uma combinação de tipos e polaridades respeita a regra:
+    partículas do mesmo tipo devem ter a mesma polaridade.
     
-    Por exemplo, para 3 partículas:
-    ['+', '+', '+']
-    ['+', '+', '-']
-    ['+', '-', '+']
-    ['-', '+', '+']
-    ['+', '-', '-']
-    ['-', '+', '-']
-    ['-', '-', '+']
-    ['-', '-', '-']
+    Args:
+        particle_types: Lista de tipos de partículas (ex: ['circle', 'square', 'circle'])
+        polarities: Lista de polaridades correspondentes (ex: ['+', '-', '+'])
     
-    Total: 2^N combinações
+    Returns:
+        True se respeita a regra, False caso contrário
     """
-    # Gerar todas as combinações (sem normalização)
-    # A verificação de duplicatas será feita estruturalmente depois
+    # Agrupar por tipo e verificar se todas têm a mesma polaridade
+    type_polarities = {}
+    
+    for ptype, polarity in zip(particle_types, polarities):
+        if ptype not in type_polarities:
+            type_polarities[ptype] = set()
+        type_polarities[ptype].add(polarity)
+    
+    # Se algum tipo tem mais de uma polaridade, viola a regra
+    for ptype, pol_set in type_polarities.items():
+        if len(pol_set) > 1:
+            return False
+    
+    return True
+
+
+def generate_polarity_combinations(num_particles, particle_types=None):
+    """
+    Gera combinações de polaridades para N partículas, respeitando a regra:
+    partículas do mesmo tipo devem ter a mesma polaridade.
+    
+    Args:
+        num_particles: Número de partículas
+        particle_types: Lista opcional de tipos de partículas. Se fornecido,
+                       filtra combinações que violam a regra de mesmo tipo.
+    
+    Returns:
+        Lista de combinações de polaridades válidas
+    """
     combinations = []
     
     for combo in itertools.product(['+', '-'], repeat=num_particles):
-        combinations.append(list(combo))
+        polarity_combo = list(combo)
+        
+        # Se tipos foram fornecidos, verificar se respeita a regra
+        if particle_types:
+            if not _respects_same_type_polarity_rule(particle_types, polarity_combo):
+                continue
+        
+        combinations.append(polarity_combo)
     
     return combinations
 

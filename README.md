@@ -32,6 +32,10 @@ Cada partícula pode ter polaridade **positiva (+)** ou **negativa (-)**.
 - ✅ Descobertas podem ser salvas e usadas em novas sínteses
 - ✅ Comutatividade garantida (A+B = B+A)
 - ✅ Visualização 2D com PixiJS
+- ✅ **Síntese Automática**: Teste múltiplas sínteses de uma vez com uma molécula base
+  - Seleção da molécula base e grupo lado a lado para melhor usabilidade
+  - Estatísticas detalhadas: Total, Sucesso, Falhas, Desconhecidas e Conhecidas
+  - Filtros por massa ou seleção específica de moléculas
 
 ## 🚀 Como Executar
 
@@ -68,22 +72,36 @@ chemical-pharma/
 │       ├── saves.py                 # Sistema de saves/jogadores
 │       └── synthesis_results.py     # Cache de sínteses
 │
-└── frontend/
-    ├── src/
-    │   ├── components/
-    │   │   ├── MoleculeViewer.vue   # Visualização de moléculas
-    │   │   └── MoleculeSelector.vue # Seletor para síntese
-    │   ├── views/
-    │   │   ├── Home.vue             # Tela principal
-    │   │   ├── PlayerSelect.vue     # Seleção de jogador
-    │   │   ├── MoleculeLibrary.vue  # Biblioteca de moléculas
-    │   │   └── Synthesis.vue        # Laboratório de síntese
-    │   ├── services/
-    │   │   └── api.js               # Cliente HTTP para backend
-    │   └── utils/
-    │       ├── moleculeComparison.js # Comparação estrutural
-    │       └── webglQueue.js        # Gerenciamento WebGL
-    └── vite.config.js
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── MoleculeViewer.vue   # Visualização de moléculas
+│   │   │   └── MoleculeSelector.vue # Seletor para síntese
+│   │   ├── views/
+│   │   │   ├── Home.vue             # Tela principal
+│   │   │   ├── PlayerSelect.vue     # Seleção de jogador
+│   │   │   ├── MoleculeLibrary.vue  # Biblioteca de moléculas
+│   │   │   ├── Synthesis.vue        # Laboratório de síntese
+│   │   │   └── AutoSynthesis.vue    # Síntese automática
+│   │   ├── services/
+│   │   │   └── api.js               # Cliente HTTP para backend
+│   │   └── utils/
+│   │       ├── moleculeComparison.js # Comparação estrutural
+│   │       └── webglQueue.js        # Gerenciamento WebGL
+│   └── vite.config.js
+│
+├── modelagem/                       # Documentação técnica
+│   ├── README.md                    # Índice da documentação
+│   ├── 01_ALGORITMO_SINTESE.md      # Algoritmo de síntese
+│   ├── 02_COMPARACAO_ESTRUTURAL.md  # Comparação molecular
+│   ├── 03_FORMULA_MOLECULAR.md      # Fórmula CQTP
+│   ├── 04_ARQUITETURA_SISTEMA.md    # Arquitetura geral
+│   ├── 05_ANALISE_REBOND.md         # Análise do rebond
+│   ├── 06_ANALISE_COMPLETUDE_SINTESE.md # Completude
+│   ├── 07_SINTESE_AUTOMATICA.md     # Síntese automática
+│   └── GIT_GUIDE.md                 # Guia Git
+│
+└── README.md                        # Este arquivo
 ```
 
 ## 🎮 Como Jogar
@@ -122,6 +140,18 @@ CQ²T + Q²P → CTP (pentagon+ com triangle- e circle-)
 - **Carga**: Soma das polaridades (positiva, neutra, negativa)
 - **Fórmula**: Notação CQTP baseada no número de conexões
   - Exemplo: `C²QT` = 2 circles, 1 square, 1 triangle
+
+## 📚 Documentação Técnica
+
+Para documentação técnica detalhada sobre algoritmos, arquitetura e análises, consulte a pasta [`modelagem/`](./modelagem/README.md):
+
+- [Algoritmo de Síntese](./modelagem/01_ALGORITMO_SINTESE.md)
+- [Comparação Estrutural](./modelagem/02_COMPARACAO_ESTRUTURAL.md)
+- [Fórmula Molecular](./modelagem/03_FORMULA_MOLECULAR.md)
+- [Arquitetura do Sistema](./modelagem/04_ARQUITETURA_SISTEMA.md)
+- [Análise do Rebond](./modelagem/05_ANALISE_REBOND.md)
+- [Análise de Completude](./modelagem/06_ANALISE_COMPLETUDE_SINTESE.md)
+- [Síntese Automática](./modelagem/07_SINTESE_AUTOMATICA.md)
 
 ## 🎯 Roadmap
 

@@ -33,6 +33,47 @@ def _is_fully_connected(adjacency, particles):
     return len(visited) == len(particles)
 
 
+def _check_same_type_polarity_consistency(particles):
+    """
+    Verifica se partículas do mesmo tipo têm a mesma polaridade.
+    
+    Regra: Todas as partículas de um mesmo tipo (circle, square, triangle, pentagon)
+           devem ter a mesma polaridade na mesma molécula.
+    
+    Args:
+        particles: Lista de partículas com 'type' e 'polarity'
+    
+    Returns:
+        Lista de strings com mensagens de erro, vazia se não há violações
+    """
+    errors = []
+    
+    # Agrupar partículas por tipo
+    particles_by_type = {}
+    for particle in particles:
+        particle_type = particle.get('type')
+        if particle_type:
+            if particle_type not in particles_by_type:
+                particles_by_type[particle_type] = []
+            particles_by_type[particle_type].append(particle)
+    
+    # Verificar se cada tipo tem apenas uma polaridade
+    for particle_type, type_particles in particles_by_type.items():
+        if len(type_particles) <= 1:
+            continue  # Não há conflito possível com apenas uma partícula
+        
+        # Verificar se todas têm a mesma polaridade
+        polarities = set(p.get('polarity') for p in type_particles if 'polarity' in p)
+        
+        if len(polarities) > 1:
+            errors.append(
+                f'Partículas do mesmo tipo ({particle_type}) têm polaridades diferentes: {polarities}. '
+                f'Todas as partículas do mesmo tipo devem ter a mesma polaridade.'
+            )
+    
+    return errors
+
+
 def validate_molecule(molecule):
     """
     Valida uma molécula completa
@@ -82,6 +123,13 @@ def validate_molecule(molecule):
     # Se já há erros básicos, retornar
     if errors:
         return False, errors
+    
+    # Verificar regra: partículas do mesmo tipo devem ter a mesma polaridade
+    consistency_errors = _check_same_type_polarity_consistency(particles)
+    errors.extend(consistency_errors)
+    
+    # Se há erros de consistência, continuar validando mas já sabemos que é inválida
+    # (não retornar aqui para coletar todos os erros)
     
     # Verificar ligações
     particle_ids = {p['id'] for p in particles}

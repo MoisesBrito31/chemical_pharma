@@ -3,7 +3,7 @@ Sistema de Síntese de Moléculas
 Realiza a mistura de duas moléculas seguindo as regras
 """
 
-from .validator import quick_validate
+from .validator import quick_validate, validate_molecule
 import copy
 from collections import deque
 
@@ -87,23 +87,60 @@ def synthesize(molecule_a, molecule_b):
         separate_molecules = split_into_molecules(result, components)
         
         # Reorganizar posições de cada molécula separadamente
+        # E validar cada uma para garantir que respeitam as regras
+        valid_molecules = []
         for mol in separate_molecules:
             reorganize_positions(mol)
+            # Validar cada molécula separada
+            is_valid, _ = validate_molecule(mol)
+            if is_valid:
+                valid_molecules.append(mol)
+        
+        # Se nenhuma molécula é válida, falhar
+        if not valid_molecules:
+            return {
+                'success': False,
+                'result': None,
+                'details': {
+                    'reason': 'invalid_result',
+                    'message': 'Todas as moléculas resultantes violam as regras',
+                    'initial_count': initial_count,
+                    'remaining_particles': remaining_particles,
+                    'annihilated_pairs': annihilated_pairs
+                }
+            }
         
         return {
             'success': True,
-            'result': separate_molecules,  # Array de moléculas
+            'result': valid_molecules,  # Array de moléculas válidas
             'multiple': True,
             'details': {
                 'initial_count': initial_count,
                 'remaining_particles': remaining_particles,
                 'annihilated_pairs': annihilated_pairs,
-                'molecules_count': len(separate_molecules)
+                'molecules_count': len(valid_molecules)
             }
         }
     
     # PASSO 4: REORGANIZA POSIÇÕES (ajusta x,y para visualização clara)
     reorganize_positions(result)
+    
+    # VALIDAÇÃO DE SEGURANÇA: Garantir que resultado respeita todas as regras
+    # (incluindo a regra de que partículas do mesmo tipo devem ter mesma polaridade)
+    is_valid, validation_errors = validate_molecule(result)
+    if not is_valid:
+        # Se resultou em molécula inválida, considerar falha
+        return {
+            'success': False,
+            'result': None,
+            'details': {
+                'reason': 'invalid_result',
+                'message': 'Resultado da síntese viola regras: ' + '; '.join(validation_errors),
+                'initial_count': initial_count,
+                'remaining_particles': remaining_particles,
+                'annihilated_pairs': annihilated_pairs
+            }
+        }
     
     return {
         'success': True,

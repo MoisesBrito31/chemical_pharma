@@ -71,6 +71,61 @@ Visão geral da arquitetura e tecnologias:
 
 ---
 
+### [05 - Análise do Rebond](./05_ANALISE_REBOND.md)
+Análise detalhada do algoritmo de rebond e seus problemas:
+- Viés de localidade do algoritmo
+- Problema da estrutura linear vs circular
+- Análise de casos de falha
+- Limitações e soluções teóricas
+
+**Conceitos-chave:**
+- Priorização por `missing`
+- Preferência por aumentar multiplicidade
+- Estrutura circular vs linear
+- Heurísticas de balanceamento
+
+---
+
+### [06 - Análise de Completude da Síntese](./06_ANALISE_COMPLETUDE_SINTESE.md)
+Análise sobre a completude do sistema de síntese:
+- Questão: É possível alcançar qualquer molécula?
+- Viés do algoritmo de rebond
+- Limitações do espaço de soluções
+- Análise de casos problemáticos
+
+**Conceitos-chave:**
+- Espaço de soluções
+- Completude algorítmica
+- Casos de falha
+- Limitações teóricas
+
+---
+
+### [07 - Síntese Automática](./07_SINTESE_AUTOMATICA.md)
+Documentação da funcionalidade de síntese automática:
+- Interface do usuário otimizada
+- Layout em 2 colunas responsivo
+- Estatísticas detalhadas (Total, Sucesso, Falhas, Desconhecidas, Conhecidas)
+- Fluxo de execução e API
+- Componentes Vue e estilos
+
+**Conceitos-chave:**
+- Síntese em lote
+- Contadores de descobertas
+- Design responsivo
+- Estatísticas de resultados
+
+---
+
+### [Guia Git](./GIT_GUIDE.md)
+Guia rápido para uso do Git no projeto:
+- Comandos básicos
+- Fluxo de trabalho
+- Convenções de commits
+- Boas práticas
+
+---
+
 ## 🎯 Público-Alvo
 
 Esta documentação é destinada a:
@@ -267,6 +322,10 @@ Ao modificar o sistema:
 | 02_COMPARACAO_ESTRUTURAL | ✅ Completo | 2025-11-28 |
 | 03_FORMULA_MOLECULAR | ✅ Completo | 2025-11-28 |
 | 04_ARQUITETURA_SISTEMA | ✅ Completo | 2025-11-28 |
+| 05_ANALISE_REBOND | ✅ Completo | 2025-11-28 |
+| 06_ANALISE_COMPLETUDE_SINTESE | ✅ Completo | 2025-11-28 |
+| 07_SINTESE_AUTOMATICA | ✅ Completo | 2025-01-XX |
+| GIT_GUIDE | ✅ Completo | 2025-11-28 |
 
 ---
 

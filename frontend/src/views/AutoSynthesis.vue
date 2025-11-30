@@ -14,17 +14,18 @@
     <div class="auto-synthesis-content">
       <!-- Configuração -->
       <div class="config-panel">
-        <div class="config-section">
-          <h2>🔬 Molécula Base</h2>
-          <MoleculeSelector
-            title="Molécula A (Base)"
-            :available-molecules="knownMolecules"
-            v-model="moleculeA"
-          />
-        </div>
+        <div class="config-row">
+          <div class="config-section">
+            <h2>🔬 Molécula Base</h2>
+            <MoleculeSelector
+              title="Molécula A (Base)"
+              :available-molecules="knownMolecules"
+              v-model="moleculeA"
+            />
+          </div>
 
-        <div class="config-section">
-          <h2>📦 Grupo de Moléculas</h2>
+          <div class="config-section">
+            <h2>📦 Grupo de Moléculas</h2>
           <div class="group-selector">
             <div class="filter-options">
               <label>
@@ -88,6 +89,7 @@
             </div>
           </div>
         </div>
+        </div>
 
         <!-- Botão de Execução -->
         <div class="action-panel">
@@ -115,6 +117,12 @@
             </span>
             <span class="stat-badge failed">
               Falhas: {{ results.total_tested - results.total_successful }}
+            </span>
+            <span class="stat-badge unknown">
+              Desconhecidas: {{ countUnknownMolecules }}
+            </span>
+            <span class="stat-badge known">
+              Conhecidas: {{ countKnownMolecules }}
             </span>
           </div>
         </div>
@@ -387,6 +395,22 @@ const getStatusClass = (status) => {
   return classes[status] || 'unknown'
 }
 
+const countUnknownMolecules = computed(() => {
+  if (!results.value || !results.value.results) return 0
+  
+  return results.value.results.filter(r => {
+    return r.result.success && r.status === 'Desconhecida'
+  }).length
+})
+
+const countKnownMolecules = computed(() => {
+  if (!results.value || !results.value.results) return 0
+  
+  return results.value.results.filter(r => {
+    return r.result.success && (r.status === 'Base' || r.status === 'Descoberta')
+  }).length
+})
+
 const getFailureReason = (result) => {
   if (!result.details) return 'Erro desconhecido'
   
@@ -594,8 +618,25 @@ onMounted(async () => {
   margin-bottom: 2rem;
 }
 
-.config-section {
+.config-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
   margin-bottom: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .config-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.config-section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .config-section h2 {
@@ -754,6 +795,16 @@ onMounted(async () => {
 
 .stat-badge.failed {
   background-color: #ef4444;
+  color: white;
+}
+
+.stat-badge.unknown {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.stat-badge.known {
+  background-color: #10b981;
   color: white;
 }
 
