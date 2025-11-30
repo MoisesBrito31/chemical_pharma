@@ -65,6 +65,12 @@
           <p>Gere todas as moléculas possíveis com características específicas</p>
         </div>
         
+        <div class="menu-card" @click="goToBuilder">
+          <div class="card-icon">🔧</div>
+          <h2>Montador de Moléculas</h2>
+          <p>Teste e lapide algoritmos com moléculas customizadas</p>
+        </div>
+        
         <div class="menu-card disabled">
           <div class="card-icon">🎮</div>
           <h2>Modo Jogo</h2>
@@ -134,6 +140,10 @@ function goToSynthesis() {
 
 function goToSimulation() {
   router.push('/simulation')
+}
+
+function goToBuilder() {
+  router.push('/builder')
 }
 
 function changePlayer() {

@@ -111,16 +111,16 @@ def _is_fully_connected(adjacency, particles):
 
 def _classify_topology(adjacency, particles, degrees, has_cycle):
     """
-    Classifica a topologia da molécula.
+    Classifica a topologia da molécula baseado nas EXTREMIDADES (partículas com grau 1).
     
     Tipos:
     - single: 1 partícula
-    - linear: cadeia reta (graus: 1-2-1 ou 1-2-2-...-2-1)
-    - Y: ramificação simples (1 partícula com grau 3)
-    - X: ramificação dupla (1 partícula com grau 4)
-    - tree: árvore (sem ciclos, múltiplas ramificações)
-    - cycle: ciclo simples (anel)
-    - mista: estrutura mista (ciclos + ramificações)
+    - linear: 2 extremidades
+    - Y: 3 extremidades
+    - X: 4 extremidades
+    - tree: mais de 4 extremidades
+    - cycle: ciclo simples (anel fechado, 0 extremidades)
+    - mista: tem ciclo + qualquer número de extremidades
     """
     n = len(particles)
     
@@ -128,47 +128,38 @@ def _classify_topology(adjacency, particles, degrees, has_cycle):
     if n == 1:
         return 'single'
     
-    # Caso: 2 partículas
-    if n == 2:
+    # Contar extremidades (partículas com grau 1)
+    endpoints = sum(1 for degree in degrees.values() if degree == 1)
+    
+    # COM CICLO - verificar se tem extremidades
+    if has_cycle:
+        # Se tem ciclo mas NÃO tem extremidades → anel puro (cycle)
+        if endpoints == 0:
+            return 'cycle'
+        # Se tem ciclo E tem extremidades → estrutura mista
+        else:
+            return 'mista'
+    
+    # SEM CICLO - classificar por número de extremidades
+    if endpoints == 0:
+        # Sem extremidades = ciclo fechado (mas sem ciclo detectado? pode ser grafo completo)
+        # Se todos têm grau 2, é um ciclo
+        if all(d == 2 for d in degrees.values()):
+            return 'cycle'
+        # Caso especial: grafo completo ou estrutura sem extremidades
+        return 'tree'
+    
+    elif endpoints == 2:
         return 'linear'
     
-    # Contar distribuição de graus
-    degree_counts = {}
-    for degree in degrees.values():
-        degree_counts[degree] = degree_counts.get(degree, 0) + 1
+    elif endpoints == 3:
+        return 'Y'
     
-    max_degree = max(degrees.values())
+    elif endpoints == 4:
+        return 'X'
     
-    # Linear: apenas graus 1 e 2
-    if set(degrees.values()).issubset({1, 2}):
-        if not has_cycle:
-            return 'linear'
-        else:
-            return 'cycle'  # Ciclo simples (anel)
-    
-    # SEM CICLO - classificar por ramificações
-    if not has_cycle:
-        # Y: Exatamente 1 partícula com grau 3
-        if degree_counts.get(3, 0) >= 1 and max_degree == 3:
-            return 'Y'
-        
-        # X: Exatamente 1 partícula com grau 4
-        if degree_counts.get(4, 0) >= 1 and max_degree == 4:
-            return 'X'
-        
-        # Tree: Múltiplas partículas com grau >= 3
-        hubs = sum(1 for d in degrees.values() if d >= 3)
-        if hubs > 1:
-            return 'tree'
-        
-        # Se tem grau 3 ou 4 mas não caiu nos casos acima, é tree
-        if max_degree >= 3:
-            return 'tree'
-        
-        return 'linear'  # Fallback
-    
-    # COM CICLO - estrutura mista (ciclo + ramificações)
-    return 'mista'
+    else:  # endpoints > 4
+        return 'tree'
 
 
 def get_topology_emoji(topology):

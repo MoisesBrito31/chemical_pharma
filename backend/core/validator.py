@@ -6,6 +6,33 @@ Verifica se uma molécula segue as regras do jogo
 from data.molecules import PARTICLE_TYPES
 
 
+def _is_fully_connected(adjacency, particles):
+    """
+    Verifica se todas as partículas estão conectadas (BFS).
+    """
+    if len(particles) == 0:
+        return False
+    
+    if len(particles) == 1:
+        return True
+    
+    # BFS a partir da primeira partícula
+    start_id = particles[0]['id']
+    visited = set()
+    queue = [start_id]
+    visited.add(start_id)
+    
+    while queue:
+        current = queue.pop(0)
+        for neighbor in adjacency.get(current, []):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+    
+    # Se visitou todas as partículas, está conectada
+    return len(visited) == len(particles)
+
+
 def validate_molecule(molecule):
     """
     Valida uma molécula completa
@@ -94,8 +121,13 @@ def validate_molecule(molecule):
                 f'Partícula {pid} ({ptype}) excede limite de conexões: '
                 f'{actual_connections}/{max_connections}'
             )
+        elif actual_connections < max_connections:
+            errors.append(
+                f'Partícula {pid} ({ptype}) não está estável: '
+                f'{actual_connections}/{max_connections} conexões'
+            )
     
-    # Verificar regra: partículas iguais não podem se ligar diretamente
+    # Verificar regras de ligação
     particle_map = {p['id']: p for p in particles}
     
     for bond in bonds:
@@ -104,11 +136,78 @@ def validate_molecule(molecule):
             p_to = particle_map.get(bond['to'])
             
             if p_from and p_to:
+                # Regra: partículas do mesmo tipo não podem se ligar
                 if p_from['type'] == p_to['type']:
                     errors.append(
                         f'Ligação inválida: partículas do mesmo tipo '
                         f'({p_from["type"]}) não podem se ligar diretamente'
                     )
+                
+                # Regra: partículas só se ligam com polaridades opostas
+                if p_from['polarity'] == p_to['polarity']:
+                    errors.append(
+                        f'Ligação inválida: partículas com mesma polaridade '
+                        f'({p_from["polarity"]}) não podem se ligar'
+                    )
+    
+    # Verificar conectividade (todas as partículas devem estar conectadas)
+    if len(particles) > 1:
+        # Construir grafo de adjacências
+        adjacency = {p['id']: [] for p in particles}
+        for bond in bonds:
+            if 'from' in bond and 'to' in bond:
+                adjacency[bond['from']].append(bond['to'])
+                adjacency[bond['to']].append(bond['from'])
+        
+        if not _is_fully_connected(adjacency, particles):
+            errors.append('Molécula não está conectada: há partículas isoladas')
+    
+    # Verificar se é possível estabilizar todas as partículas
+    # A soma das conexões necessárias deve ser par (cada ligação conecta 2 partículas)
+    total_needed = 0
+    for particle in particles:
+        pid = particle['id']
+        ptype = particle['type']
+        max_connections = PARTICLE_TYPES[ptype]['connections']
+        actual_connections = connection_count.get(pid, 0)
+        needed = max_connections - actual_connections
+        if needed > 0:
+            total_needed += needed
+    
+    # Se há conexões faltando, verificar se é possível criar
+    if total_needed > 0:
+        # Contar partículas por tipo e polaridade
+        positive_by_type = {}
+        negative_by_type = {}
+        
+        for particle in particles:
+            ptype = particle['type']
+            polarity = particle['polarity']
+            actual = connection_count.get(particle['id'], 0)
+            max_conn = PARTICLE_TYPES[ptype]['connections']
+            needed = max_conn - actual
+            
+            if needed > 0:
+                if polarity == '+':
+                    positive_by_type[ptype] = positive_by_type.get(ptype, 0) + needed
+                else:
+                    negative_by_type[ptype] = negative_by_type.get(ptype, 0) + needed
+        
+        # Verificar se há partículas de tipos opostos que podem se ligar
+        can_stabilize = False
+        for pos_type, pos_needed in positive_by_type.items():
+            for neg_type, neg_needed in negative_by_type.items():
+                if pos_type != neg_type:  # Tipos diferentes podem se ligar
+                    can_stabilize = True
+                    break
+            if can_stabilize:
+                break
+        
+        if not can_stabilize and total_needed > 0:
+            errors.append(
+                f'Impossível estabilizar: faltam {total_needed} conexões, '
+                f'mas não há partículas compatíveis para criar ligações'
+            )
     
     is_valid = len(errors) == 0
     return is_valid, errors

@@ -4,6 +4,7 @@ import Game from '../views/Game.vue'
 import MoleculeLibrary from '../views/MoleculeLibrary.vue'
 import Synthesis from '../views/Synthesis.vue'
 import Simulation from '../views/Simulation.vue'
+import MoleculeBuilder from '../views/MoleculeBuilder.vue'
 import PlayerSelect from '../views/PlayerSelect.vue'
 import { getCurrentSave } from '../services/api.js'
 
@@ -41,6 +42,12 @@ const routes = [
     path: '/simulation',
     name: 'Simulation',
     component: Simulation,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/builder',
+    name: 'MoleculeBuilder',
+    component: MoleculeBuilder,
     meta: { requiresAuth: true }
   }
 ]

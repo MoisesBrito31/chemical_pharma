@@ -164,14 +164,18 @@ def add_discovery_to_save(save_id, molecule, formula=None, name=None):
     """
     Adiciona uma descoberta ao save e atualiza contadores
     
-    Returns: discovery_id
+    Returns: discovery_id ou None se já existe
     """
     from .discovered_molecules import add_discovery
     
-    # Adicionar descoberta
+    # Adicionar descoberta (já verifica duplicatas internamente)
     discovery_id = add_discovery(save_id, molecule, formula, name)
     
-    # Atualizar estatísticas
+    # Se já existe, retornar None
+    if discovery_id is None:
+        return None
+    
+    # Atualizar estatísticas apenas se foi adicionada com sucesso
     update_save_stats(save_id, discoveries_increment=1, money_increment=100)
     
     return discovery_id

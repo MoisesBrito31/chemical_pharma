@@ -1747,5 +1747,133 @@
       "remaining_particles": 10,
       "annihilated_pairs": 1
     }
+  },
+  "save_d298fb66:m3_1+m3_6": {
+    "success": true,
+    "result": {
+      "particles": [
+        {
+          "id": "p0",
+          "type": "circle",
+          "polarity": "-",
+          "x": -6,
+          "y": 0
+        },
+        {
+          "id": "p1",
+          "type": "square",
+          "polarity": "+",
+          "x": -2,
+          "y": 0
+        },
+        {
+          "id": "p2",
+          "type": "square",
+          "polarity": "+",
+          "x": 6,
+          "y": 0
+        },
+        {
+          "id": "p3",
+          "type": "triangle",
+          "polarity": "-",
+          "x": 2,
+          "y": 0
+        }
+      ],
+      "bonds": [
+        {
+          "from": "p1",
+          "to": "p0",
+          "multiplicity": 1
+        },
+        {
+          "from": "p2",
+          "to": "p3",
+          "multiplicity": 2
+        },
+        {
+          "from": "p1",
+          "to": "p3",
+          "multiplicity": 1
+        }
+      ]
+    },
+    "multiple": false,
+    "details": {
+      "initial_count": 6,
+      "remaining_particles": 4,
+      "annihilated_pairs": 1
+    }
+  },
+  "save_d298fb66:m3_1+m4_3": {
+    "success": true,
+    "result": {
+      "particles": [
+        {
+          "id": "p0",
+          "type": "circle",
+          "polarity": "-",
+          "x": 0,
+          "y": 4
+        },
+        {
+          "id": "p1",
+          "type": "circle",
+          "polarity": "-",
+          "x": 0,
+          "y": -4
+        },
+        {
+          "id": "p2",
+          "type": "circle",
+          "polarity": "-",
+          "x": 4,
+          "y": 0
+        },
+        {
+          "id": "p3",
+          "type": "circle",
+          "polarity": "-",
+          "x": -4,
+          "y": 0
+        },
+        {
+          "id": "p4",
+          "type": "pentagon",
+          "polarity": "+",
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "bonds": [
+        {
+          "from": "p2",
+          "to": "p4",
+          "multiplicity": 1
+        },
+        {
+          "from": "p3",
+          "to": "p4",
+          "multiplicity": 1
+        },
+        {
+          "from": "p4",
+          "to": "p0",
+          "multiplicity": 1
+        },
+        {
+          "from": "p1",
+          "to": "p4",
+          "multiplicity": 1
+        }
+      ]
+    },
+    "multiple": false,
+    "details": {
+      "initial_count": 7,
+      "remaining_particles": 5,
+      "annihilated_pairs": 1
+    }
   }
 }

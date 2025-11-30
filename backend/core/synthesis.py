@@ -392,8 +392,12 @@ def rebond_molecule(molecule):
                 
                 p2 = next(p for p in molecule['particles'] if p['id'] == u2['id'])
                 
-                # Verificar se podem se ligar (tipos diferentes)
+                # Verificar se podem se ligar (tipos diferentes e polaridades opostas)
                 if p1['type'] == p2['type']:
+                    continue
+                
+                # Partículas só se ligam com polaridades opostas
+                if p1['polarity'] == p2['polarity']:
                     continue
                 
                 # Verificar se já existe bond entre eles
@@ -544,45 +548,62 @@ def _layout_as_polygon(molecule, cycle_ids, adjacency):
     # Identificar partículas não posicionadas
     unpositioned = [p['id'] for p in molecule['particles'] if p['id'] not in positioned]
     
-    # Para cada partícula não posicionada
+    # Separar partículas por tipo de conexão
+    single_connected = []  # Conecta com 1 partícula do ciclo
+    multi_connected = []   # Conecta com 2+ partículas do ciclo
+    
     for pid in unpositioned:
-        # Contar conexões com o ciclo
         connections_to_cycle = [n for n in adjacency[pid] if n in cycle_ids]
         num_connections = len(connections_to_cycle)
         
         if num_connections == 0:
-            # Sem conexão com ciclo, pular (BFS vai posicionar depois)
-            continue
+            continue  # Sem conexão com ciclo
         
         if num_connections == 1:
-            # REGRA 1: Conecta com apenas 1 → colocar FORA do ciclo
-            cycle_neighbor_id = connections_to_cycle[0]
-            cycle_neighbor = next(p for p in molecule['particles'] if p['id'] == cycle_neighbor_id)
-            
-            # Direção para fora (radial)
-            angle_to_center = math.atan2(cycle_neighbor['y'], cycle_neighbor['x'])
-            
-            particle = next(p for p in molecule['particles'] if p['id'] == pid)
-            particle['x'] = round(cycle_neighbor['x'] + RADIUS * 1.2 * math.cos(angle_to_center))
-            particle['y'] = round(cycle_neighbor['y'] + RADIUS * 1.2 * math.sin(angle_to_center))
-            positioned.add(pid)
-            
+            single_connected.append(pid)
         else:
-            # REGRA 2: Conecta com 2+ → colocar DENTRO do ciclo (centro)
-            # Calcular centroide das partículas do ciclo conectadas
-            connected_particles = [
-                next(p for p in molecule['particles'] if p['id'] == cid) 
-                for cid in connections_to_cycle
-            ]
+            multi_connected.append(pid)
+    
+    # REGRA 1: Partículas single-conectadas → FORA do ciclo
+    for pid in single_connected:
+        connections_to_cycle = [n for n in adjacency[pid] if n in cycle_ids]
+        cycle_neighbor_id = connections_to_cycle[0]
+        cycle_neighbor = next(p for p in molecule['particles'] if p['id'] == cycle_neighbor_id)
+        
+        angle_to_center = math.atan2(cycle_neighbor['y'], cycle_neighbor['x'])
+        
+        particle = next(p for p in molecule['particles'] if p['id'] == pid)
+        particle['x'] = round(cycle_neighbor['x'] + RADIUS * 1.2 * math.cos(angle_to_center))
+        particle['y'] = round(cycle_neighbor['y'] + RADIUS * 1.2 * math.sin(angle_to_center))
+        positioned.add(pid)
+    
+    # REGRA 2: Partículas multi-conectadas → DENTRO do ciclo, distribuídas ao redor do centro
+    if multi_connected:
+        # Calcular centro do ciclo
+        cycle_center_x = sum(next(p for p in molecule['particles'] if p['id'] == cid)['x'] 
+                            for cid in cycle_ids) / len(cycle_ids)
+        cycle_center_y = sum(next(p for p in molecule['particles'] if p['id'] == cid)['y'] 
+                            for cid in cycle_ids) / len(cycle_ids)
+        
+        # Distribuir partículas multi-conectadas ao redor do centro
+        num_multi = len(multi_connected)
+        if num_multi == 1:
+            # Apenas 1 → colocar no centro
+            particle = next(p for p in molecule['particles'] if p['id'] == multi_connected[0])
+            particle['x'] = round(cycle_center_x)
+            particle['y'] = round(cycle_center_y)
+            positioned.add(multi_connected[0])
+        else:
+            # Múltiplas → distribuir em círculo ao redor do centro
+            inner_radius = RADIUS * 0.5  # Raio menor para partículas internas
+            angle_step = (2 * math.pi) / num_multi
             
-            center_x = sum(p['x'] for p in connected_particles) / len(connected_particles)
-            center_y = sum(p['y'] for p in connected_particles) / len(connected_particles)
-            
-            # Posicionar no centroide (DENTRO do ciclo)
-            particle = next(p for p in molecule['particles'] if p['id'] == pid)
-            particle['x'] = round(center_x)
-            particle['y'] = round(center_y)
-            positioned.add(pid)
+            for i, pid in enumerate(multi_connected):
+                angle = i * angle_step
+                particle = next(p for p in molecule['particles'] if p['id'] == pid)
+                particle['x'] = round(cycle_center_x + inner_radius * math.cos(angle))
+                particle['y'] = round(cycle_center_y + inner_radius * math.sin(angle))
+                positioned.add(pid)
 
 
 def _layout_as_tree(molecule, adjacency):

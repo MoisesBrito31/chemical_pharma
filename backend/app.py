@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
+import copy
 from data.molecules import (
     get_molecules_by_mass, 
     get_all_molecules, 
@@ -10,10 +11,11 @@ from data.molecules import (
     PARTICLE_TYPES,
     find_molecule
 )
-from core.synthesis import synthesize
+from core.synthesis import synthesize, reorganize_positions, rebond_molecule, calculate_connections
 from core.validator import validate_molecule
 from core.generator import generate_molecules
 from core.analyzer import get_molecule_properties
+from core.molecule_analyzer import analyze_molecule_structure
 from data.synthesis_results import (
     get_synthesis_result,
     save_synthesis_result,
@@ -253,7 +255,21 @@ def api_save_discovery():
             'error': 'Molécula é obrigatória'
         }), 400
     
+    # Verificar se já existe
+    from data.discovered_molecules import molecule_exists_in_discoveries
+    if molecule_exists_in_discoveries(save_id, molecule):
+        return jsonify({
+            'success': False,
+            'error': 'Esta molécula já foi descoberta!'
+        }), 400
+    
     discovery_id = add_discovery_to_save(save_id, molecule, formula, name)
+    
+    if discovery_id is None:
+        return jsonify({
+            'success': False,
+            'error': 'Esta molécula já foi descoberta!'
+        }), 400
     
     return jsonify({
         'success': True,
@@ -447,6 +463,136 @@ def api_simulate():
             molecule['properties'] = props
     
     return jsonify(result)
+
+# ============================================
+# MOLECULE BUILDER ROUTES
+# ============================================
+
+@app.route('/api/molecule/validate', methods=['POST'])
+def api_builder_validate():
+    """
+    Valida e processa uma molécula customizada (JSON).
+    Pode aplicar algoritmos de reorganização e análise.
+    
+    Body: {
+        'molecule': {...},  # Molécula em JSON
+        'actions': ['validate', 'reorganize', 'analyze']  # Ações a executar
+    }
+    """
+    data = request.json
+    molecule = data.get('molecule')
+    actions = data.get('actions', ['validate'])
+    
+    if not molecule:
+        return jsonify({
+            'success': False,
+            'error': 'Molécula não fornecida'
+        }), 400
+    
+    result = {
+        'success': True,
+        'molecule': molecule,
+        'results': {}
+    }
+    
+    # Ação: Validar
+    if 'validate' in actions:
+        is_valid, errors = validate_molecule(molecule)
+        result['results']['validation'] = {
+            'valid': is_valid,
+            'reason': '; '.join(errors) if errors else 'Molécula válida',
+            'details': errors if errors else []
+        }
+    
+    # Ação: Reorganizar posições
+    if 'reorganize' in actions:
+        try:
+            molecule_copy = copy.deepcopy(molecule)
+            reorganize_positions(molecule_copy)
+            result['results']['reorganized'] = molecule_copy
+        except Exception as e:
+            result['results']['reorganize_error'] = str(e)
+    
+    # Ação: Analisar estrutura
+    if 'analyze' in actions:
+        try:
+            structure = analyze_molecule_structure(molecule)
+            result['results']['structure'] = structure
+        except Exception as e:
+            result['results']['analyze_error'] = str(e)
+    
+    return jsonify(result)
+
+@app.route('/api/molecule/rebond', methods=['POST'])
+def api_builder_rebond():
+    """
+    Testa a função rebond: recebe apenas partículas e tenta criar ligações válidas.
+    
+    Body: {
+        'particles': [...]  # Apenas partículas, sem bonds
+    }
+    
+    Returns: {
+        'success': bool,
+        'molecule': {...} ou None,
+        'message': str
+    }
+    """
+    data = request.json
+    particles = data.get('particles', [])
+    
+    if not particles:
+        return jsonify({
+            'success': False,
+            'error': 'Partículas não fornecidas'
+        }), 400
+    
+    # Criar molécula com bonds vazios
+    molecule = {
+        'particles': copy.deepcopy(particles),
+        'bonds': []
+    }
+    
+    # Tentar criar ligações com rebond
+    try:
+        result = rebond_molecule(molecule)
+        
+        if result is None:
+            return jsonify({
+                'success': False,
+                'molecule': None,
+                'message': 'Não foi possível criar ligações válidas para estabilizar todas as partículas'
+            })
+        
+        # Verificar se todas as partículas estão estáveis
+        from data.molecules import PARTICLE_TYPES
+        
+        connection_count = calculate_connections(result)
+        all_stable = True
+        
+        for particle in result['particles']:
+            pid = particle['id']
+            ptype = particle['type']
+            max_conn = PARTICLE_TYPES[ptype]['connections']
+            current_conn = connection_count.get(pid, 0)
+            
+            if current_conn != max_conn:
+                all_stable = False
+                break
+        
+        return jsonify({
+            'success': True,
+            'molecule': result,
+            'all_stable': all_stable,
+            'message': 'Ligações criadas com sucesso!' if all_stable else 'Ligações criadas, mas algumas partículas ainda instáveis'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'molecule': None,
+            'error': str(e)
+        }), 500
 
 # ============================================
 # WEBSOCKET EVENTS

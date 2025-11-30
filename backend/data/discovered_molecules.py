@@ -7,6 +7,7 @@ import json
 import os
 import uuid
 from datetime import datetime
+from core.molecule_comparison import are_molecules_identical
 
 DISCOVERIES_FILE = 'data/discovered_molecules.json'
 
@@ -40,12 +41,24 @@ def get_next_discovery_name_count(save_id):
             return count
         count += 1
 
+def molecule_exists_in_discoveries(save_id, molecule):
+    """Verifica se uma molécula já existe nas descobertas de um save"""
+    discoveries = get_all_discoveries(save_id)
+    for discovery in discoveries:
+        if are_molecules_identical(molecule, discovery.get('molecule')):
+            return True
+    return False
+
 def add_discovery(save_id, molecule, formula=None, name=None):
     """
     Adiciona uma nova descoberta para um save específico
     
-    Returns: discovery_id
+    Returns: discovery_id ou None se já existe
     """
+    # Verificar se já existe
+    if molecule_exists_in_discoveries(save_id, molecule):
+        return None
+    
     discoveries = load_discoveries()
     
     # Garantir que existe dicionário para este save
