@@ -1,0 +1,641 @@
+{
+  "save_bab7f1c6": {
+    "save_id": "save_bab7f1c6",
+    "topology_flavor_map": {
+      "single": "Insípido",
+      "linear": "Amargo-complexo",
+      "Y": "Amargo",
+      "X": "Azedo-amargo",
+      "tree": "Salgado",
+      "cycle": "Azedo",
+      "mista": "Amargo-intenso",
+      "empty": "Doce"
+    },
+    "multiplicity_color_map": {
+      "[1]": {
+        "name": "Lima",
+        "color": "#00FF00",
+        "description": "Ligações simples"
+      },
+      "[2]": {
+        "name": "Verde",
+        "color": "#32CD32",
+        "description": "Ligações duplas"
+      },
+      "[1, 2]": {
+        "name": "Coral",
+        "color": "#FF7F50",
+        "description": "Ligações simples e duplas"
+      },
+      "[1, 3]": {
+        "name": "Laranja",
+        "color": "#FF8C00",
+        "description": "Ligações simples e triplas"
+      },
+      "[2, 3]": {
+        "name": "Turquesa",
+        "color": "#40E0D0",
+        "description": "Ligações simples e duplas"
+      },
+      "[1, 2, 3]": {
+        "name": "Lavanda",
+        "color": "#E6E6FA",
+        "description": "Ligações simples, duplas e triplas"
+      }
+    },
+    "effect_patterns": {
+      "Analgésico": [
+        [
+          "pentagon",
+          "triangle",
+          2
+        ],
+        [
+          "circle",
+          "square",
+          2
+        ]
+      ],
+      "Anti-inflamatório": [
+        [
+          "pentagon",
+          "square",
+          3
+        ],
+        [
+          "circle",
+          "triangle",
+          2
+        ]
+      ],
+      "Antibiótico": [
+        [
+          "pentagon",
+          "square",
+          1
+        ],
+        [
+          "circle",
+          "triangle",
+          1
+        ]
+      ],
+      "Regenerativo": [
+        [
+          "circle",
+          "triangle",
+          1
+        ],
+        [
+          "pentagon",
+          "square",
+          3
+        ]
+      ],
+      "Antioxidante": [
+        [
+          "circle",
+          "pentagon",
+          3
+        ],
+        [
+          "square",
+          "triangle",
+          1
+        ]
+      ],
+      "Imunomodulador": [
+        [
+          "circle",
+          "square",
+          2
+        ],
+        [
+          "pentagon",
+          "triangle",
+          3
+        ]
+      ],
+      "Vasodilatador": [
+        [
+          "pentagon",
+          "triangle",
+          1
+        ],
+        [
+          "circle",
+          "square",
+          1
+        ]
+      ],
+      "Hepatoprotetor": [
+        [
+          "circle",
+          "square",
+          2
+        ],
+        [
+          "square",
+          "triangle",
+          1
+        ],
+        [
+          "pentagon",
+          "triangle",
+          2
+        ]
+      ],
+      "Cardioprotetor": [
+        [
+          "pentagon",
+          "triangle",
+          1
+        ],
+        [
+          "circle",
+          "square",
+          2
+        ]
+      ],
+      "Neuroprotetor": [
+        [
+          "square",
+          "triangle",
+          1
+        ],
+        [
+          "circle",
+          "pentagon",
+          1
+        ]
+      ],
+      "Hepatotóxico": [
+        [
+          "circle",
+          "square",
+          3
+        ],
+        [
+          "circle",
+          "pentagon",
+          1
+        ],
+        [
+          "circle",
+          "triangle",
+          1
+        ]
+      ],
+      "Nefrotóxico": [
+        [
+          "circle",
+          "triangle",
+          2
+        ],
+        [
+          "square",
+          "triangle",
+          1
+        ],
+        [
+          "pentagon",
+          "square",
+          3
+        ]
+      ],
+      "Neurotóxico": [
+        [
+          "pentagon",
+          "square",
+          3
+        ],
+        [
+          "circle",
+          "triangle",
+          1
+        ]
+      ],
+      "Carcinogênico": [
+        [
+          "circle",
+          "square",
+          1
+        ],
+        [
+          "circle",
+          "pentagon",
+          1
+        ],
+        [
+          "square",
+          "triangle",
+          2
+        ]
+      ],
+      "Teratogênico": [
+        [
+          "circle",
+          "pentagon",
+          1
+        ],
+        [
+          "pentagon",
+          "triangle",
+          3
+        ],
+        [
+          "square",
+          "triangle",
+          2
+        ]
+      ],
+      "Mutagênico": [
+        [
+          "circle",
+          "triangle",
+          3
+        ],
+        [
+          "circle",
+          "square",
+          3
+        ],
+        [
+          "pentagon",
+          "square",
+          3
+        ]
+      ],
+      "Cardiotóxico": [
+        [
+          "circle",
+          "triangle",
+          2
+        ],
+        [
+          "pentagon",
+          "square",
+          1
+        ]
+      ],
+      "Alergênico": [
+        [
+          "pentagon",
+          "square",
+          2
+        ],
+        [
+          "circle",
+          "triangle",
+          1
+        ]
+      ],
+      "Hemorrágico": [
+        [
+          "circle",
+          "pentagon",
+          2
+        ],
+        [
+          "square",
+          "triangle",
+          1
+        ]
+      ],
+      "Sedativo-excessivo": [
+        [
+          "pentagon",
+          "triangle",
+          1
+        ],
+        [
+          "circle",
+          "square",
+          1
+        ]
+      ]
+    },
+    "generated_at": "2025-11-30T23:17:34.920468"
+  },
+  "save_5f4dccfe": {
+    "save_id": "save_5f4dccfe",
+    "topology_flavor_map": {
+      "linear": "Azedo",
+      "Y": "Salgado",
+      "X": "Amargo-complexo",
+      "tree": "Doce",
+      "cycle": "Insípido",
+      "mista": "Amargo"
+    },
+    "multiplicity_color_map": {
+      "[1]": {
+        "name": "Turquesa",
+        "color": "#40E0D0",
+        "description": "Ligações simples"
+      },
+      "[2]": {
+        "name": "Amarelo",
+        "color": "#FFD700",
+        "description": "Ligações duplas"
+      },
+      "[1, 2]": {
+        "name": "Lavanda",
+        "color": "#E6E6FA",
+        "description": "Ligações simples e duplas"
+      },
+      "[1, 3]": {
+        "name": "Verde",
+        "color": "#32CD32",
+        "description": "Ligações simples e triplas"
+      },
+      "[2, 3]": {
+        "name": "Lima",
+        "color": "#00FF00",
+        "description": "Ligações simples e duplas"
+      },
+      "[1, 2, 3]": {
+        "name": "Vermelho",
+        "color": "#FF4500",
+        "description": "Ligações simples, duplas e triplas"
+      }
+    },
+    "effect_patterns": {
+      "Analgésico": [
+        [
+          "pentagon",
+          "triangle",
+          2
+        ],
+        [
+          "circle",
+          "square",
+          3
+        ],
+        [
+          "pentagon",
+          "triangle",
+          1
+        ]
+      ],
+      "Anti-inflamatório": [
+        [
+          "pentagon",
+          "square",
+          3
+        ],
+        [
+          "circle",
+          "triangle",
+          1
+        ]
+      ],
+      "Antibiótico": [
+        [
+          "circle",
+          "triangle",
+          2
+        ],
+        [
+          "pentagon",
+          "square",
+          1
+        ]
+      ],
+      "Regenerativo": [
+        [
+          "square",
+          "triangle",
+          1
+        ],
+        [
+          "pentagon",
+          "triangle",
+          2
+        ],
+        [
+          "circle",
+          "triangle",
+          1
+        ]
+      ],
+      "Antioxidante": [
+        [
+          "pentagon",
+          "square",
+          2
+        ],
+        [
+          "circle",
+          "pentagon",
+          1
+        ],
+        [
+          "square",
+          "triangle",
+          2
+        ]
+      ],
+      "Imunomodulador": [
+        [
+          "circle",
+          "triangle",
+          3
+        ],
+        [
+          "pentagon",
+          "triangle",
+          3
+        ],
+        [
+          "square",
+          "triangle",
+          3
+        ]
+      ],
+      "Vasodilatador": [
+        [
+          "circle",
+          "square",
+          1
+        ],
+        [
+          "pentagon",
+          "triangle",
+          1
+        ]
+      ],
+      "Hepatoprotetor": [
+        [
+          "pentagon",
+          "triangle",
+          2
+        ],
+        [
+          "circle",
+          "square",
+          3
+        ]
+      ],
+      "Cardioprotetor": [
+        [
+          "circle",
+          "pentagon",
+          2
+        ],
+        [
+          "square",
+          "triangle",
+          1
+        ]
+      ],
+      "Neuroprotetor": [
+        [
+          "square",
+          "triangle",
+          2
+        ],
+        [
+          "pentagon",
+          "triangle",
+          2
+        ],
+        [
+          "circle",
+          "triangle",
+          3
+        ]
+      ],
+      "Hepatotóxico": [
+        [
+          "pentagon",
+          "triangle",
+          1
+        ],
+        [
+          "circle",
+          "square",
+          2
+        ],
+        [
+          "circle",
+          "pentagon",
+          1
+        ]
+      ],
+      "Nefrotóxico": [
+        [
+          "pentagon",
+          "triangle",
+          2
+        ],
+        [
+          "circle",
+          "square",
+          1
+        ]
+      ],
+      "Neurotóxico": [
+        [
+          "circle",
+          "pentagon",
+          1
+        ],
+        [
+          "square",
+          "triangle",
+          1
+        ]
+      ],
+      "Carcinogênico": [
+        [
+          "circle",
+          "triangle",
+          1
+        ],
+        [
+          "pentagon",
+          "square",
+          2
+        ]
+      ],
+      "Teratogênico": [
+        [
+          "circle",
+          "square",
+          1
+        ],
+        [
+          "pentagon",
+          "triangle",
+          3
+        ]
+      ],
+      "Mutagênico": [
+        [
+          "square",
+          "triangle",
+          1
+        ],
+        [
+          "circle",
+          "pentagon",
+          2
+        ]
+      ],
+      "Cardiotóxico": [
+        [
+          "circle",
+          "square",
+          1
+        ],
+        [
+          "pentagon",
+          "triangle",
+          1
+        ]
+      ],
+      "Alergênico": [
+        [
+          "square",
+          "triangle",
+          1
+        ],
+        [
+          "circle",
+          "triangle",
+          2
+        ],
+        [
+          "circle",
+          "pentagon",
+          2
+        ]
+      ],
+      "Hemorrágico": [
+        [
+          "pentagon",
+          "triangle",
+          1
+        ],
+        [
+          "circle",
+          "square",
+          3
+        ]
+      ],
+      "Sedativo-excessivo": [
+        [
+          "circle",
+          "square",
+          1
+        ],
+        [
+          "pentagon",
+          "triangle",
+          1
+        ]
+      ]
+    },
+    "generated_at": "2025-11-30T23:21:41.441638"
+  }
+}

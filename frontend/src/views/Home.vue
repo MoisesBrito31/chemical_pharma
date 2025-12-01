@@ -53,6 +53,12 @@
           <p>Explore todas as moléculas conhecidas e descobertas</p>
         </div>
         
+        <div class="menu-card" @click="goToPropertiesLibrary">
+          <div class="card-icon">📖</div>
+          <h2>Biblioteca de Propriedades</h2>
+          <p>Guia de referência: sabores, cores e efeitos moleculares</p>
+        </div>
+        
         <div class="menu-card" @click="goToSynthesis">
           <div class="card-icon">⚗️</div>
           <h2>Laboratório de Síntese</h2>
@@ -138,6 +144,10 @@ async function loadPlayerData() {
 
 function goToLibrary() {
   router.push('/molecules')
+}
+
+function goToPropertiesLibrary() {
+  router.push('/properties')
 }
 
 function goToSynthesis() {

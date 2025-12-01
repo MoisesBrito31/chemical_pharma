@@ -87,6 +87,8 @@
             <span class="label">Carga:</span>
             <span class="value">{{ molecule.charge > 0 ? '+' : '' }}{{ molecule.charge }}</span>
           </div>
+          
+          <ObservableProperties v-if="molecule.observableProperties" :properties="molecule.observableProperties" />
         </div>
       </div>
     </div>
@@ -101,11 +103,25 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import MoleculeViewer from '../components/MoleculeViewer.vue'
-import { getAllMolecules, getAllDiscoveries, calculateMoleculeProperties } from '../services/api.js'
+import ObservableProperties from '../components/ObservableProperties.vue'
+import { getAllMolecules, getAllDiscoveries, calculateMoleculeProperties, getObservableProperties } from '../services/api.js'
 
 const router = useRouter()
 
 const allMolecules = ref([])
+
+// Função auxiliar para carregar propriedades observáveis
+async function loadObservableProperties(molecule) {
+  try {
+    const response = await getObservableProperties(molecule)
+    if (response.success) {
+      return response.data
+    }
+  } catch (error) {
+    console.warn('Erro ao carregar propriedades observáveis:', error)
+  }
+  return null
+}
 const selectedMass = ref('all')
 const selectedType = ref('all')
 const selectedPolarity = ref('all')
@@ -122,33 +138,42 @@ async function loadMolecules() {
     let molecules = []
 
     if (predefinedResponse.success) {
-      molecules = predefinedResponse.data.map(mol => {
-        const props = calculateMoleculeProperties(mol)
-        return {
-          ...mol,
-          ...props,
-          isDiscovery: false
-        }
-      })
+      const moleculesWithProps = await Promise.all(
+        predefinedResponse.data.map(async mol => {
+          const props = calculateMoleculeProperties(mol)
+          const observableProps = await loadObservableProperties(mol)
+          return {
+            ...mol,
+            ...props,
+            observableProperties: observableProps,
+            isDiscovery: false
+          }
+        })
+      )
+      molecules = moleculesWithProps
     }
 
     // Carregar descobertas
     try {
       const discoveriesResponse = await getAllDiscoveries()
       if (discoveriesResponse.success) {
-        const discoveries = discoveriesResponse.data.map(disc => {
-          const mol = disc.molecule
-          const props = calculateMoleculeProperties(mol)
-          return {
-            ...mol,
-            id: disc.id,
-            name: disc.name,
-            formula: disc.formula || props.formula,
-            ...props,
-            isDiscovery: true
-          }
-        })
-        molecules = [...molecules, ...discoveries]
+        const discoveriesWithProps = await Promise.all(
+          discoveriesResponse.data.map(async disc => {
+            const mol = disc.molecule
+            const props = calculateMoleculeProperties(mol)
+            const observableProps = await loadObservableProperties(mol)
+            return {
+              ...mol,
+              id: disc.id,
+              name: disc.name,
+              formula: disc.formula || props.formula,
+              ...props,
+              observableProperties: observableProps,
+              isDiscovery: true
+            }
+          })
+        )
+        molecules = [...molecules, ...discoveriesWithProps]
       }
     } catch (error) {
       console.warn('Erro ao carregar descobertas:', error)

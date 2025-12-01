@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import copy
+import json
 from data.molecules import (
     get_molecules_by_mass, 
     get_all_molecules, 
@@ -572,6 +573,87 @@ def api_delete_save(save_id):
             'success': False,
             'error': 'Save não encontrado'
         }), 404
+
+# ============================================
+# PROPERTIES ROUTES
+# ============================================
+
+@app.route('/api/properties/profile', methods=['GET'])
+def api_get_property_profile():
+    """Retorna o perfil de propriedades do save ativo (sabores, cores, efeitos)"""
+    from core.property_profiles import get_or_create_profile
+    
+    save_id = get_active_save_id()
+    if not save_id:
+        return jsonify({
+            'success': False,
+            'error': 'Nenhum save ativo'
+        }), 400
+    
+    profile = get_or_create_profile(save_id)
+    
+    # Retornar apenas os mapeamentos (não incluir dados sensíveis)
+    # Converter tuplas para strings JSON-friendly para chaves de dicionário
+    multiplicity_color_map = {}
+    for key, value in profile.get('multiplicity_color_map', {}).items():
+        # Converter tupla para string JSON-friendly
+        if isinstance(key, tuple):
+            key_str = json.dumps(sorted(key))
+        elif isinstance(key, list):
+            key_str = json.dumps(sorted(key))
+        else:
+            key_str = str(key)
+        multiplicity_color_map[key_str] = value
+    
+    # Converter padrões de efeitos (tuplas) para listas
+    effect_patterns = {}
+    for effect_name, patterns in profile.get('effect_patterns', {}).items():
+        effect_patterns[effect_name] = [
+            list(pattern) if isinstance(pattern, tuple) else pattern
+            for pattern in patterns
+        ]
+    
+    return jsonify({
+        'success': True,
+        'data': {
+            'topology_flavor_map': profile.get('topology_flavor_map', {}),
+            'multiplicity_color_map': multiplicity_color_map,
+            'effect_patterns': effect_patterns
+        }
+    })
+
+@app.route('/api/molecules/observable-properties', methods=['POST'])
+def api_get_observable_properties():
+    """Retorna as propriedades observáveis de uma molécula (sabor, aparência, efeitos)"""
+    from core.molecule_properties import calculate_molecule_observable_properties
+    from core.property_profiles import get_or_create_profile
+    
+    data = request.json
+    molecule = data.get('molecule')
+    
+    if not molecule:
+        return jsonify({
+            'success': False,
+            'error': 'Molécula é obrigatória'
+        }), 400
+    
+    try:
+        # Obter perfil do save para calcular efeitos
+        save_id = get_active_save_id()
+        profile = get_or_create_profile(save_id) if save_id else None
+        
+        # Calcular todas as propriedades observáveis
+        observable_props = calculate_molecule_observable_properties(molecule, profile)
+        
+        return jsonify({
+            'success': True,
+            'data': observable_props
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 # ============================================
 # SIMULATION ROUTES

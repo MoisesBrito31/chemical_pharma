@@ -113,6 +113,8 @@
                 {{ getTopologyLabel(molecule.structure.topology) }}
               </span>
             </div>
+            
+            <ObservableProperties v-if="molecule.observableProperties" :properties="molecule.observableProperties" />
           </div>
           
           <!-- Botão para salvar molécula desconhecida -->
@@ -141,12 +143,14 @@
 <script>
 import { ref, computed } from 'vue';
 import MoleculeViewer from '../components/MoleculeViewer.vue';
-import { saveDiscovery as saveDiscoveryAPI, calculateMolecularFormula } from '../services/api.js';
+import ObservableProperties from '../components/ObservableProperties.vue';
+import { saveDiscovery as saveDiscoveryAPI, calculateMolecularFormula, getObservableProperties } from '../services/api.js';
 
 export default {
   name: 'Simulation',
   components: {
-    MoleculeViewer
+    MoleculeViewer,
+    ObservableProperties
   },
   setup() {
     const particleType = ref(0); // 0 = Qualquer
@@ -185,7 +189,25 @@ export default {
         const data = await response.json();
 
         if (data.success) {
-          results.value = data;
+          // Carregar propriedades observáveis para cada molécula
+          if (data.molecules && Array.isArray(data.molecules)) {
+            const moleculesWithProps = await Promise.all(
+              data.molecules.map(async (mol) => {
+                try {
+                  const propsResponse = await getObservableProperties(mol);
+                  if (propsResponse.success) {
+                    return { ...mol, observableProperties: propsResponse.data };
+                  }
+                } catch (err) {
+                  console.warn('Erro ao carregar propriedades observáveis:', err);
+                }
+                return mol;
+              })
+            );
+            results.value = { ...data, molecules: moleculesWithProps };
+          } else {
+            results.value = data;
+          }
         } else {
           error.value = data.details?.error || data.error || 'Erro desconhecido';
         }
@@ -241,7 +263,6 @@ export default {
 
     const getTopologyLabel = (topology) => {
       const labels = {
-        'single': '● Única',
         'linear': '━ Linear',
         'Y': 'Y Ramificação',
         'X': 'X Cruzamento',

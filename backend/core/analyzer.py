@@ -25,23 +25,9 @@ def analyze_molecule(molecule):
     particles = molecule.get('particles', [])
     bonds = molecule.get('bonds', [])
     
-    if len(particles) == 0:
-        return {
-            'has_cycle': False,
-            'topology': 'empty',
-            'cycle_size': None,
-            'max_degree': 0,
-            'branches': 0
-        }
-    
-    if len(particles) == 1:
-        return {
-            'has_cycle': False,
-            'topology': 'single',
-            'cycle_size': None,
-            'max_degree': 0,
-            'branches': 0
-        }
+    # Moléculas vazias ou com partícula única não são válidas
+    if len(particles) < 2:
+        raise ValueError(f'Molécula inválida: deve ter pelo menos 2 partículas (atual: {len(particles)})')
     
     # Construir grafo de adjacências
     adjacency = {p['id']: [] for p in particles}

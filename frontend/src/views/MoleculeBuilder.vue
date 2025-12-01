@@ -737,7 +737,6 @@ export default {
 
     const getTopologyLabel = (topology) => {
       const labels = {
-        'single': '● Única',
         'linear': '━ Linear',
         'Y': 'Y Ramificação',
         'X': 'X Cruzamento',

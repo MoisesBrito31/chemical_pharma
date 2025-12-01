@@ -1,14 +1,14 @@
 {
   "saves": {
-    "save_bab7f1c6": {
-      "id": "save_bab7f1c6",
+    "save_5f4dccfe": {
+      "id": "save_5f4dccfe",
       "player_name": "teste",
-      "created_at": "2025-11-30T15:05:23.154398",
-      "last_played": "2025-11-30T15:30:31.803618",
-      "money": 5000,
-      "discoveries_count": 40,
-      "syntheses_count": 241
+      "created_at": "2025-11-30T23:21:38.207986",
+      "last_played": "2025-11-30T23:45:12.862007",
+      "money": 7000,
+      "discoveries_count": 60,
+      "syntheses_count": 17
     }
   },
-  "active_save": "save_bab7f1c6"
+  "active_save": "save_5f4dccfe"
 }

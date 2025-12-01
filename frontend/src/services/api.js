@@ -41,6 +41,15 @@ export async function calculateProperties(molecule) {
   return response.json()
 }
 
+export async function getObservableProperties(molecule) {
+  const response = await fetch(`${API_BASE_URL}/molecules/observable-properties`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ molecule })
+  })
+  return response.json()
+}
+
 // ============================================
 // SYNTHESIS
 // ============================================
@@ -161,6 +170,15 @@ export async function deleteSave(saveId) {
   const response = await fetch(`${API_BASE_URL}/saves/${saveId}`, {
     method: 'DELETE'
   })
+  return response.json()
+}
+
+// ============================================
+// PROPERTIES
+// ============================================
+
+export async function getPropertyProfile() {
+  const response = await fetch(`${API_BASE_URL}/properties/profile`)
   return response.json()
 }
 

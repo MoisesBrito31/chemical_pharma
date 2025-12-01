@@ -96,7 +96,12 @@ def validate_molecule(molecule):
     
     # Verificar se há partículas
     if len(particles) == 0:
-        errors.append('Molécula vazia')
+        errors.append('Molécula vazia: uma molécula válida deve ter pelo menos 2 partículas')
+        return False, errors
+    
+    # Verificar se há pelo menos 2 partículas (molécula válida)
+    if len(particles) == 1:
+        errors.append('Molécula inválida: uma molécula válida deve ter pelo menos 2 partículas')
         return False, errors
     
     # Verificar cada partícula

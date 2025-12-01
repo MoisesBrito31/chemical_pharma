@@ -117,6 +117,23 @@ Documentação da funcionalidade de síntese automática:
 
 ---
 
+### [08 - Proposta: Sistema de Identificação](./08_PROPOSTA_SISTEMA_IDENTIFICACAO.md)
+Proposta de mecânica de gameplay para identificação de moléculas:
+- Propriedades observáveis (Sabor, Aparência, Efeitos)
+- Sistema de testes com custos
+- Notas de laboratório e progressão
+- Mecânica de identificação por pistas
+- Algoritmos de geração de propriedades
+- Interface proposta e estrutura de dados
+
+**Conceitos-chave:**
+- Propriedades derivadas de estrutura
+- Progressive disclosure
+- Sistema econômico integrado
+- Identificação como puzzle
+
+---
+
 ### [Guia Git](./GIT_GUIDE.md)
 Guia rápido para uso do Git no projeto:
 - Comandos básicos
@@ -325,6 +342,7 @@ Ao modificar o sistema:
 | 05_ANALISE_REBOND | ✅ Completo | 2025-11-28 |
 | 06_ANALISE_COMPLETUDE_SINTESE | ✅ Completo | 2025-11-28 |
 | 07_SINTESE_AUTOMATICA | ✅ Completo | 2025-01-XX |
+| 08_PROPOSTA_SISTEMA_IDENTIFICACAO | 📝 Proposta | 2025-01-XX |
 | GIT_GUIDE | ✅ Completo | 2025-11-28 |
 
 ---

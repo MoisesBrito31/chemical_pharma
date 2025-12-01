@@ -21,14 +21,9 @@ def analyze_molecule_structure(molecule):
     particles = molecule.get('particles', [])
     bonds = molecule.get('bonds', [])
     
-    if len(particles) == 0:
-        return {
-            'has_cycle': False,
-            'topology': 'empty',
-            'branch_count': 0,
-            'max_degree': 0,
-            'is_connected': False
-        }
+    # Moléculas vazias não são válidas
+    if len(particles) < 2:
+        raise ValueError(f'Molécula inválida: deve ter pelo menos 2 partículas (atual: {len(particles)})')
     
     # Construir grafo de adjacências
     adjacency = {p['id']: [] for p in particles}
@@ -167,14 +162,12 @@ def get_topology_emoji(topology):
     Retorna emoji/ícone para cada topologia.
     """
     emoji_map = {
-        'single': '●',
         'linear': '━',
         'Y': 'Y',
         'X': 'X',
         'tree': '⋈',
         'cycle': '○',
-        'mista': '◈',
-        'empty': '∅'
+        'mista': '◈'
     }
     return emoji_map.get(topology, '?')
 
@@ -184,14 +177,12 @@ def get_topology_description(topology):
     Retorna descrição em português para cada topologia.
     """
     descriptions = {
-        'single': 'Partícula única',
         'linear': 'Cadeia linear',
         'Y': 'Ramificação Y',
         'X': 'Ramificação X',
         'tree': 'Árvore ramificada',
         'cycle': 'Ciclo/Anel',
-        'mista': 'Estrutura mista',
-        'empty': 'Vazio'
+        'mista': 'Estrutura mista'
     }
     return descriptions.get(topology, 'Desconhecido')
 

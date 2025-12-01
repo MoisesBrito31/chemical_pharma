@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Game from '../views/Game.vue'
 import MoleculeLibrary from '../views/MoleculeLibrary.vue'
+import PropertiesLibrary from '../views/PropertiesLibrary.vue'
 import Synthesis from '../views/Synthesis.vue'
 import AutoSynthesis from '../views/AutoSynthesis.vue'
 import Simulation from '../views/Simulation.vue'
@@ -31,6 +32,12 @@ const routes = [
     path: '/molecules',
     name: 'MoleculeLibrary',
     component: MoleculeLibrary,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/properties',
+    name: 'PropertiesLibrary',
+    component: PropertiesLibrary,
     meta: { requiresAuth: true }
   },
   {
