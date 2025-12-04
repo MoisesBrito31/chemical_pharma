@@ -48,3 +48,4 @@
 - **Massa Baixa** → Efeitos rápidos/voláteis
 - **Massa Alta** → Efeitos duradouros/estáveis
 
+

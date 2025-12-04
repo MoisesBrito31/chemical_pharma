@@ -75,6 +75,8 @@
                 <div class="result-details">
                   <p><strong>Massa:</strong> {{ molecule.particles.length }}</p>
                   <p><strong>Carga:</strong> {{ getMoleculeCharge(molecule) }}</p>
+                  
+                  <ObservableProperties v-if="molecule.observableProperties" :properties="molecule.observableProperties" />
                 </div>
 
                 <!-- Ações para nova descoberta -->
@@ -125,6 +127,8 @@
               <p><strong>Partículas iniciais:</strong> {{ lastResult.details.initial_count }}</p>
               <p><strong>Pares anulados:</strong> {{ lastResult.details.annihilated_pairs }}</p>
               <p><strong>Partículas finais:</strong> {{ lastResult.details.remaining_particles }}</p>
+              
+              <ObservableProperties v-if="lastResult.result.observableProperties" :properties="lastResult.result.observableProperties" />
             </div>
 
             <!-- Ações para nova descoberta -->
@@ -217,13 +221,15 @@ import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import MoleculeSelector from '../components/MoleculeSelector.vue'
 import MoleculeViewer from '../components/MoleculeViewer.vue'
+import ObservableProperties from '../components/ObservableProperties.vue'
 import { 
   getAllMolecules, 
   getAllDiscoveries,
   saveDiscovery as saveDiscoveryAPI,
   calculateMolecularFormula,
   synthesizeMolecules,
-  getCurrentSave
+  getCurrentSave,
+  getObservableProperties
 } from '../services/api.js'
 import { moleculeExistsInList } from '../utils/moleculeComparison.js'
 import * as PIXI from 'pixi.js'
@@ -341,6 +347,37 @@ async function performSynthesis() {
   
   try {
     const result = await synthesizeMolecules(moleculeA.value.id, moleculeB.value.id)
+    
+    // Carregar propriedades observáveis se a síntese foi bem-sucedida
+    if (result.success) {
+      if (result.multiple && Array.isArray(result.result)) {
+        // Carregar propriedades para cada molécula em resultado múltiplo
+        const moleculesWithProps = await Promise.all(
+          result.result.map(async (mol) => {
+            try {
+              const propsResponse = await getObservableProperties(mol)
+              if (propsResponse.success) {
+                return { ...mol, observableProperties: propsResponse.data }
+              }
+            } catch (err) {
+              console.warn('Erro ao carregar propriedades observáveis:', err)
+            }
+            return mol
+          })
+        )
+        result.result = moleculesWithProps
+      } else if (result.result) {
+        // Carregar propriedades para resultado único
+        try {
+          const propsResponse = await getObservableProperties(result.result)
+          if (propsResponse.success) {
+            result.result.observableProperties = propsResponse.data
+          }
+        } catch (err) {
+          console.warn('Erro ao carregar propriedades observáveis:', err)
+        }
+      }
+    }
     
     lastResult.value = result
     

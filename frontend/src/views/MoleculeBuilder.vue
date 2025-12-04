@@ -244,9 +244,13 @@
         <!-- Visualização da Molécula -->
         <div class="visualization-section">
           <h2>👁️ Visualização</h2>
-          <div class="molecule-display">
+            <div class="molecule-display">
             <div v-if="currentMolecule" class="molecule-viewer-container">
               <MoleculeViewer :molecule="currentMolecule" :size="300" />
+              
+              <div class="observable-props-wrapper" v-if="currentMolecule.observableProperties">
+                <ObservableProperties :properties="currentMolecule.observableProperties" />
+              </div>
             </div>
             <div v-else class="placeholder">
               <p>Nenhuma molécula carregada</p>
@@ -310,6 +314,10 @@
             </div>
             <div class="molecule-viewer-container">
               <MoleculeViewer :molecule="results.reorganized" :size="300" />
+              
+              <div class="observable-props-wrapper" v-if="results.reorganized.observableProperties">
+                <ObservableProperties :properties="results.reorganized.observableProperties" />
+              </div>
             </div>
             <div class="reorganized-actions">
               <button @click="copyReorganized" class="btn-copy">📋 Copiar JSON Reorganizado</button>
@@ -339,6 +347,10 @@
             </div>
             <div v-if="results.rebond.molecule" class="molecule-viewer-container">
               <MoleculeViewer :molecule="results.rebond.molecule" :size="300" />
+              
+              <div class="observable-props-wrapper" v-if="results.rebond.molecule.observableProperties">
+                <ObservableProperties :properties="results.rebond.molecule.observableProperties" />
+              </div>
             </div>
             <button v-if="results.rebond.molecule" @click="loadRebondResult" class="btn-copy">
               📋 Carregar Resultado
@@ -364,13 +376,15 @@
 <script>
 import { ref, reactive, watch, onMounted, computed } from 'vue';
 import MoleculeViewer from '../components/MoleculeViewer.vue';
-import { saveDiscovery as saveDiscoveryAPI, calculateMolecularFormula, getAllDiscoveries } from '../services/api.js';
+import ObservableProperties from '../components/ObservableProperties.vue';
+import { saveDiscovery as saveDiscoveryAPI, calculateMolecularFormula, getAllDiscoveries, getObservableProperties } from '../services/api.js';
 import { moleculeExistsInList } from '../utils/moleculeComparison.js';
 
 export default {
   name: 'MoleculeBuilder',
   components: {
-    MoleculeViewer
+    MoleculeViewer,
+    ObservableProperties
   },
   setup() {
     const activeTab = ref('visual');
@@ -404,12 +418,24 @@ export default {
       updateJsonFromData();
     }, { deep: true });
 
-    const updateCurrentMolecule = () => {
+    const updateCurrentMolecule = async () => {
       if (moleculeData.particles.length > 0) {
-        currentMolecule.value = {
+        const molecule = {
           particles: [...moleculeData.particles],
           bonds: [...moleculeData.bonds]
         };
+        
+        // Carregar propriedades observáveis
+        try {
+          const propsResponse = await getObservableProperties(molecule);
+          if (propsResponse.success) {
+            molecule.observableProperties = propsResponse.data;
+          }
+        } catch (err) {
+          console.warn('Erro ao carregar propriedades observáveis:', err);
+        }
+        
+        currentMolecule.value = molecule;
       } else {
         currentMolecule.value = null;
       }
@@ -583,14 +609,35 @@ export default {
         if (data.success) {
           results.value = data.results;
           
+          // Carregar propriedades observáveis para todas as moléculas processadas
+          const loadObservableProps = async (molecule) => {
+            if (molecule) {
+              try {
+                const propsResponse = await getObservableProperties(molecule);
+                if (propsResponse.success) {
+                  molecule.observableProperties = propsResponse.data;
+                }
+              } catch (err) {
+                console.warn('Erro ao carregar propriedades observáveis:', err);
+              }
+            }
+          };
+          
+          // Carregar propriedades para molécula reorganizada
           if (data.results.reorganized) {
             currentMolecule.value = data.results.reorganized;
+            await loadObservableProps(data.results.reorganized);
             // Atualizar moleculeData com resultado reorganizado
             moleculeData.particles = [...data.results.reorganized.particles];
             moleculeData.bonds = [...data.results.reorganized.bonds];
           } else if (currentMolecule.value) {
-            // Se não há reorganização, manter a molécula atual
-            // currentMolecule já está definido
+            // Carregar propriedades para molécula atual
+            await loadObservableProps(currentMolecule.value);
+          }
+          
+          // Carregar propriedades para molécula do rebond
+          if (data.results.rebond && data.results.rebond.molecule) {
+            await loadObservableProps(data.results.rebond.molecule);
           }
           
           // Recarregar descobertas para verificação atualizada
@@ -638,6 +685,16 @@ export default {
         results.value.rebond = data;
 
         if (data.success && data.molecule) {
+          // Carregar propriedades observáveis
+          try {
+            const propsResponse = await getObservableProperties(data.molecule);
+            if (propsResponse.success) {
+              data.molecule.observableProperties = propsResponse.data;
+            }
+          } catch (err) {
+            console.warn('Erro ao carregar propriedades observáveis:', err);
+          }
+          
           // Mostrar resultado na visualização
           currentMolecule.value = data.molecule;
         }

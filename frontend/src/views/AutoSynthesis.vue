@@ -203,13 +203,17 @@
                 <span>→</span>
               </div>
               
-              <div class="molecule-item">
-                <h4 class="molecule-label">Resultado</h4>
-                <div class="molecule-view-wrapper">
-                  <MoleculeViewer :molecule="result.result.result" :size="200" />
+                <div class="molecule-item">
+                  <h4 class="molecule-label">Resultado</h4>
+                  <div class="molecule-view-wrapper">
+                    <MoleculeViewer :molecule="result.result.result" :size="200" />
+                  </div>
+                  <p class="molecule-formula">{{ getResultFormula(result.result.result) }}</p>
+                  
+                  <div class="observable-props-wrapper">
+                    <ObservableProperties v-if="result.result.result.observableProperties" :properties="result.result.result.observableProperties" />
+                  </div>
                 </div>
-                <p class="molecule-formula">{{ getResultFormula(result.result.result) }}</p>
-              </div>
             </div>
 
             <!-- Resultados múltiplos -->
@@ -273,6 +277,8 @@
                   <MoleculeViewer :molecule="mol" :size="150" />
                   <div class="multiple-molecule-info">
                     <span>{{ getResultFormula(mol) }}</span>
+                    
+                    <ObservableProperties v-if="mol.observableProperties" :properties="mol.observableProperties" />
                   </div>
                 </div>
               </div>
@@ -334,12 +340,14 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import MoleculeSelector from '../components/MoleculeSelector.vue'
 import MoleculeViewer from '../components/MoleculeViewer.vue'
+import ObservableProperties from '../components/ObservableProperties.vue'
 import { 
   getAllMolecules, 
   getAllDiscoveries,
   saveDiscovery as saveDiscoveryAPI,
   calculateMolecularFormula,
-  getCurrentSave
+  getCurrentSave,
+  getObservableProperties
 } from '../services/api.js'
 
 const router = useRouter()
@@ -465,6 +473,45 @@ const executeAutoSynthesis = async () => {
     const data = await response.json()
     
     if (data.success) {
+      // Carregar propriedades observáveis para cada resultado
+      if (data.results && Array.isArray(data.results)) {
+        const resultsWithProps = await Promise.all(
+          data.results.map(async (result) => {
+            if (result.result.success) {
+              if (result.result.multiple && Array.isArray(result.result.result)) {
+                // Resultado múltiplo: carregar propriedades para cada molécula
+                const moleculesWithProps = await Promise.all(
+                  result.result.result.map(async (mol) => {
+                    try {
+                      const propsResponse = await getObservableProperties(mol)
+                      if (propsResponse.success) {
+                        return { ...mol, observableProperties: propsResponse.data }
+                      }
+                    } catch (err) {
+                      console.warn('Erro ao carregar propriedades observáveis:', err)
+                    }
+                    return mol
+                  })
+                )
+                result.result.result = moleculesWithProps
+              } else if (result.result.result) {
+                // Resultado único: carregar propriedades
+                try {
+                  const propsResponse = await getObservableProperties(result.result.result)
+                  if (propsResponse.success) {
+                    result.result.result.observableProperties = propsResponse.data
+                  }
+                } catch (err) {
+                  console.warn('Erro ao carregar propriedades observáveis:', err)
+                }
+              }
+            }
+            return result
+          })
+        )
+        data.results = resultsWithProps
+      }
+      
       results.value = data
     } else {
       alert('Erro: ' + (data.error || 'Erro desconhecido'))

@@ -67,8 +67,9 @@
       <section class="properties-section">
         <h2>⚡ Efeitos Moleculares</h2>
         <p class="section-description">
-          Cada efeito requer padrões específicos de ligação entre partículas.
-          A molécula precisa ter <strong>TODOS</strong> os padrões listados para ter o efeito.
+          Cada efeito requer <strong>3 requisitos específicos</strong> de ligação entre partículas.
+          Cada requisito especifica: tipo de partícula, polaridade e multiplicidade da ligação.
+          A molécula precisa ter <strong>TODOS os 3 requisitos</strong> listados para ter o efeito.
         </p>
         
         <!-- Filtros de efeitos -->
@@ -94,7 +95,7 @@
             >
               <div class="effect-header">
                 <span class="effect-name">{{ effectName }}</span>
-                <span class="pattern-count">{{ patterns.length }} padrão(ões)</span>
+                <span class="pattern-count">{{ patterns.length }} requisito(s)</span>
               </div>
               <div class="effect-patterns">
                 <div
@@ -102,10 +103,12 @@
                   :key="idx"
                   class="pattern-item"
                 >
-                  <span class="pattern-bond">
-                    {{ formatParticleType(pattern[0]) }} ↔ {{ formatParticleType(pattern[1]) }}
-                  </span>
-                  <span class="pattern-multiplicity">×{{ pattern[2] }}</span>
+                  <div class="pattern-requirement">
+                    <span class="requirement-label">Requisito {{ idx + 1 }}:</span>
+                    <span class="requirement-details">
+                      {{ formatRequirement(pattern) }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -123,7 +126,7 @@
             >
               <div class="effect-header">
                 <span class="effect-name">{{ effectName }}</span>
-                <span class="pattern-count">{{ patterns.length }} padrão(ões)</span>
+                <span class="pattern-count">{{ patterns.length }} requisito(s)</span>
               </div>
               <div class="effect-patterns">
                 <div
@@ -131,10 +134,12 @@
                   :key="idx"
                   class="pattern-item"
                 >
-                  <span class="pattern-bond">
-                    {{ formatParticleType(pattern[0]) }} ↔ {{ formatParticleType(pattern[1]) }}
-                  </span>
-                  <span class="pattern-multiplicity">×{{ pattern[2] }}</span>
+                  <div class="pattern-requirement">
+                    <span class="requirement-label">Requisito {{ idx + 1 }}:</span>
+                    <span class="requirement-details">
+                      {{ formatRequirement(pattern) }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -280,6 +285,34 @@ function formatParticleType(type) {
     'pentagon': '⬠'
   }
   return typeMap[type] || type
+}
+
+function formatRequirement(pattern) {
+  // Formato novo: [tipo1, polaridade1, tipo2, polaridade2, multiplicidade] - 5 elementos
+  // Formato antigo (compatibilidade): [tipo1, tipo2, multiplicidade] - 3 elementos
+  
+  if (!pattern || !Array.isArray(pattern)) {
+    return 'Formato inválido'
+  }
+  
+  // Formato novo (5 elementos)
+  if (pattern.length === 5) {
+    const [type1, polarity1, type2, polarity2, multiplicity] = pattern
+    const type1Formatted = formatParticleType(type1)
+    const type2Formatted = formatParticleType(type2)
+    const polarity1Symbol = polarity1 === '+' ? '⁺' : '⁻'
+    const polarity2Symbol = polarity2 === '+' ? '⁺' : '⁻'
+    
+    return `${type1Formatted}${polarity1Symbol} ↔ ${type2Formatted}${polarity2Symbol} (×${multiplicity})`
+  }
+  
+  // Formato antigo (3 elementos) - compatibilidade
+  if (pattern.length === 3) {
+    const [type1, type2, multiplicity] = pattern
+    return `${formatParticleType(type1)} ↔ ${formatParticleType(type2)} (×${multiplicity})`
+  }
+  
+  return 'Formato desconhecido'
 }
 </script>
 
@@ -547,24 +580,31 @@ function formatParticleType(type) {
 }
 
 .pattern-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   background-color: #0a0a0a;
-  padding: 0.75rem;
+  padding: 1rem;
   border-radius: 6px;
+  border-left: 3px solid #646cff;
 }
 
-.pattern-bond {
+.pattern-requirement {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.requirement-label {
+  color: #aaa;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.requirement-details {
   color: #fff;
   font-size: 1rem;
   font-family: monospace;
-}
-
-.pattern-multiplicity {
-  color: #646cff;
-  font-weight: 600;
-  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .error-message {

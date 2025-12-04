@@ -6538,6 +6538,281 @@
       "formula": "CQ²T³P",
       "name": "Descoberta #60",
       "discovered_at": "2025-11-30T23:45:12.853004"
+    },
+    "disc_da7ccc73": {
+      "id": "disc_da7ccc73",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p0",
+            "multiplicity": 2,
+            "to": "p1"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 2,
+            "to": "p2"
+          },
+          {
+            "from": "p0",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 1,
+            "to": "p6"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 1,
+            "to": "p0"
+          },
+          {
+            "from": "p1",
+            "multiplicity": 1,
+            "to": "p4"
+          },
+          {
+            "from": "p2",
+            "multiplicity": 1,
+            "to": "p6"
+          },
+          {
+            "from": "p3",
+            "multiplicity": 1,
+            "to": "p7"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 1,
+            "to": "p8"
+          }
+        ],
+        "observableProperties": {
+          "appearance": {
+            "color": "#FF4500",
+            "description": "Ligações simples e duplas",
+            "name": "Vermelho"
+          },
+          "effects": [],
+          "flavor": "Azedo-amargo"
+        },
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 0,
+            "y": -3
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 3,
+            "y": -2
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 0,
+            "y": 3
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "triangle",
+            "x": -3,
+            "y": -1
+          },
+          {
+            "id": "p4",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 3,
+            "y": 1
+          },
+          {
+            "id": "p5",
+            "polarity": "-",
+            "type": "triangle",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id": "p6",
+            "polarity": "+",
+            "type": "square",
+            "x": -3,
+            "y": 2
+          },
+          {
+            "id": "p7",
+            "polarity": "+",
+            "type": "circle",
+            "x": -6,
+            "y": -2
+          },
+          {
+            "id": "p8",
+            "polarity": "+",
+            "type": "circle",
+            "x": 9,
+            "y": 3
+          }
+        ]
+      },
+      "formula": "C²QT⁴P²",
+      "name": "analgezico",
+      "discovered_at": "2025-12-04T15:20:09.308856"
+    },
+    "disc_f0fb8765": {
+      "id": "disc_f0fb8765",
+      "molecule": {
+        "bonds": [
+          {
+            "from": "p9",
+            "multiplicity": 1,
+            "to": "p4"
+          },
+          {
+            "from": "p7",
+            "multiplicity": 1,
+            "to": "p5"
+          },
+          {
+            "from": "p8",
+            "multiplicity": 1,
+            "to": "p6"
+          },
+          {
+            "from": "p9",
+            "multiplicity": 1,
+            "to": "p0"
+          },
+          {
+            "from": "p7",
+            "multiplicity": 1,
+            "to": "p1"
+          },
+          {
+            "from": "p8",
+            "multiplicity": 1,
+            "to": "p2"
+          },
+          {
+            "from": "p9",
+            "multiplicity": 1,
+            "to": "p3"
+          },
+          {
+            "from": "p4",
+            "multiplicity": 1,
+            "to": "p7"
+          },
+          {
+            "from": "p5",
+            "multiplicity": 1,
+            "to": "p8"
+          },
+          {
+            "from": "p6",
+            "multiplicity": 1,
+            "to": "p9"
+          }
+        ],
+        "observableProperties": {
+          "appearance": {
+            "color": "#87CEEB",
+            "description": "Apenas ligações simples",
+            "name": "Azul claro"
+          },
+          "effects": [],
+          "flavor": "Azedo-amargo"
+        },
+        "particles": [
+          {
+            "id": "p0",
+            "polarity": "-",
+            "type": "circle",
+            "x": 0,
+            "y": -7
+          },
+          {
+            "id": "p1",
+            "polarity": "-",
+            "type": "circle",
+            "x": 6,
+            "y": 2
+          },
+          {
+            "id": "p2",
+            "polarity": "-",
+            "type": "circle",
+            "x": -6,
+            "y": 4
+          },
+          {
+            "id": "p3",
+            "polarity": "-",
+            "type": "circle",
+            "x": 0,
+            "y": -7
+          },
+          {
+            "id": "p4",
+            "polarity": "-",
+            "type": "square",
+            "x": 3,
+            "y": -2
+          },
+          {
+            "id": "p5",
+            "polarity": "-",
+            "type": "square",
+            "x": 0,
+            "y": 3
+          },
+          {
+            "id": "p6",
+            "polarity": "-",
+            "type": "square",
+            "x": -3,
+            "y": -1
+          },
+          {
+            "id": "p7",
+            "polarity": "+",
+            "type": "triangle",
+            "x": 3,
+            "y": 1
+          },
+          {
+            "id": "p8",
+            "polarity": "+",
+            "type": "triangle",
+            "x": -3,
+            "y": 2
+          },
+          {
+            "id": "p9",
+            "polarity": "+",
+            "type": "pentagon",
+            "x": 0,
+            "y": -3
+          }
+        ]
+      },
+      "formula": "C⁴Q³T²P",
+      "name": "antibiotico",
+      "discovered_at": "2025-12-04T15:39:32.292787"
     }
   }
 }

@@ -1,63 +1,21 @@
 """
-Sistema de Perfis de Propriedades Aleatórios por Partida
+Sistema de Perfis de Propriedades por Save
 
-Cada save/partida tem um perfil único que define:
-- Mapeamento aleatório de topologias -> sabores
-- Mapeamento aleatório de multiplicidades -> cores
-- Condições para efeitos baseadas em atributos
+Cada save tem um perfil único que mapeia:
+- Topologias -> Sabores (randomizado por save)
+- Multiplicidades -> Cores (randomizado por save)  
+- Padrões de ligação -> Efeitos (3 requisitos específicos por efeito)
 
-Isso torna cada partida única, forçando o jogador a descobrir os mapeamentos.
+Os perfis são salvos em JSON e são consistentes para cada save.
 """
 
 import random
 import json
-from typing import Dict, List, Optional
-
-
-# ============================================================================
-# LISTAS BASE (disponíveis para randomização)
-# ============================================================================
-
-# Sabores disponíveis
-AVAILABLE_FLAVORS = [
-    'Insípido', 'Salgado', 'Amargo', 'Amargo-intenso', 'Amargo-complexo',
-    'Azedo', 'Azedo-amargo', 'Doce', 'Picante', 'Metálico', 'Ácido', 'Adstringente'
-]
-
-# Topologias possíveis
-AVAILABLE_TOPOLOGIES = [
-    'linear', 'Y', 'X', 'tree', 'cycle', 'mista'
-]
-
-# Cores disponíveis (com seus hex codes)
-AVAILABLE_COLORS = [
-    {'name': 'Azul claro', 'color': '#87CEEB'},
-    {'name': 'Verde', 'color': '#32CD32'},
-    {'name': 'Vermelho', 'color': '#FF4500'},
-    {'name': 'Laranja', 'color': '#FF8C00'},
-    {'name': 'Magenta', 'color': '#FF1493'},
-    {'name': 'Amarelo', 'color': '#FFD700'},
-    {'name': 'Ciano', 'color': '#00CED1'},
-    {'name': 'Rosa', 'color': '#FF69B4'},
-    {'name': 'Lavanda', 'color': '#E6E6FA'},
-    {'name': 'Coral', 'color': '#FF7F50'},
-    {'name': 'Turquesa', 'color': '#40E0D0'},
-    {'name': 'Lima', 'color': '#00FF00'}
-]
-
-# Multiplicidades possíveis
-AVAILABLE_MULTIPLICITY_SETS = [
-    frozenset([1]),
-    frozenset([2]),
-    frozenset([1, 2]),
-    frozenset([1, 3]),
-    frozenset([2, 3]),
-    frozenset([1, 2, 3])
-]
-
+import os
+from typing import Dict, List, Optional, Tuple
 
 # ============================================================================
-# SISTEMA DE PADRÕES DE LIGAÇÃO PARA EFEITOS
+# LISTAS DE ELEMENTOS PARA RANDOMIZAÇÃO
 # ============================================================================
 
 # Efeitos terapêuticos (10)
@@ -91,30 +49,34 @@ SIDE_EFFECTS = [
 # Todos os efeitos
 ALL_EFFECTS = THERAPEUTIC_EFFECTS + SIDE_EFFECTS
 
+# Topologias disponíveis (sem 'single' e 'empty')
+AVAILABLE_TOPOLOGIES = ['linear', 'Y', 'X', 'tree', 'cycle', 'mista']
 
-def generate_effect_patterns(effect_name: str, seed: Optional[int] = None, num_patterns: int = 2) -> List:
-    """
-    Gera padrões de ligação aleatórios para um efeito.
-    
-    Cada efeito terá um conjunto de 2-3 padrões de ligação que devem estar presentes.
-    Um padrão é uma tupla: (tipo1, tipo2, multiplicidade)
-    
-    Args:
-        effect_name: Nome do efeito
-        seed: Seed para randomização (opcional)
-        num_patterns: Número de padrões necessários (2-3, default 2)
-    
-    Returns:
-        Lista de tuplas (tipo1, tipo2, multiplicidade) normalizadas
-    """
-    from core.effect_patterns import generate_effect_patterns as gen_patterns
-    
-    if seed is not None:
-        effect_hash = hash(f"{seed}_{effect_name}")
-    else:
-        effect_hash = hash(effect_name)
-    
-    return gen_patterns(effect_name, num_patterns=num_patterns, seed=effect_hash)
+# Sabores disponíveis
+AVAILABLE_FLAVORS = [
+    'Salgado', 'Amargo', 'Amargo-intenso', 'Amargo-complexo',
+    'Azedo', 'Azedo-amargo', 'Doce', 'Umami'
+]
+
+# Cores disponíveis para aparência
+AVAILABLE_COLORS = [
+    {'name': 'Azul claro', 'color': '#87CEEB', 'description': 'Apenas ligações simples'},
+    {'name': 'Verde', 'color': '#32CD32', 'description': 'Apenas ligações duplas'},
+    {'name': 'Vermelho', 'color': '#FF4500', 'description': 'Ligações simples e duplas'},
+    {'name': 'Laranja', 'color': '#FF8C00', 'description': 'Ligações simples e triplas'},
+    {'name': 'Magenta', 'color': '#FF1493', 'description': 'Ligações duplas e triplas'},
+    {'name': 'Amarelo', 'color': '#FFD700', 'description': 'Todas as ligações (simples, duplas e triplas)'}
+]
+
+# Combinações de multiplicidades
+AVAILABLE_MULTIPLICITY_SETS = [
+    frozenset([1]),
+    frozenset([2]),
+    frozenset([1, 2]),
+    frozenset([1, 3]),
+    frozenset([2, 3]),
+    frozenset([1, 2, 3])
+]
 
 
 # ============================================================================
@@ -128,7 +90,7 @@ def generate_property_profile(save_id: str) -> Dict:
     O perfil inclui:
     - Mapeamento topologia -> sabor
     - Mapeamento multiplicidades -> cor
-    - Condições para cada efeito
+    - Condições para cada efeito (3 requisitos específicos por efeito)
     
     Args:
         save_id: ID do save (usado como seed)
@@ -142,7 +104,7 @@ def generate_property_profile(save_id: str) -> Dict:
     
     # 1. Gerar mapeamento de topologia -> sabor
     # Cada topologia recebe um sabor único aleatório
-    shuffled_flavors = random.sample(AVAILABLE_FLAVORS[:8], k=8)  # Usar 8 sabores para 8 topologias
+    shuffled_flavors = random.sample(AVAILABLE_FLAVORS[:6], k=6)  # 6 sabores para 6 topologias
     topology_flavor_map = {}
     for i, topology in enumerate(AVAILABLE_TOPOLOGIES):
         topology_flavor_map[topology] = shuffled_flavors[i] if i < len(shuffled_flavors) else shuffled_flavors[0]
@@ -162,14 +124,9 @@ def generate_property_profile(save_id: str) -> Dict:
         }
     
     # 3. Gerar padrões de ligação para cada efeito
-    # Cada efeito terá 2-3 padrões de ligação necessários
-    effect_patterns = {}
-    for effect in ALL_EFFECTS:
-        # Usar hash combinado do save_id + nome do efeito como seed
-        effect_seed = hash(f"{save_id}_{effect}")
-        # Determinar número de padrões: 2 para maioria, 3 para alguns
-        num_patterns = 2 if hash(effect) % 3 != 0 else 3
-        effect_patterns[effect] = generate_effect_patterns(effect, seed=effect_seed, num_patterns=num_patterns)
+    # Cada efeito terá 3 requisitos específicos de ligação (tipo, polaridade, multiplicidade)
+    from core.effect_patterns import generate_all_effect_requirements
+    effect_patterns = generate_all_effect_requirements()
     
     # Reset random seed
     random.seed()
@@ -232,7 +189,7 @@ def _serialize_profile_for_json(profile: Dict) -> Dict:
             serialized[key] = new_map
             
         elif key == 'effect_patterns':
-            # Converter lista de padrões (cada padrão é uma tupla)
+            # Converter lista de padrões (cada padrão é uma tupla de 5 elementos: tipo1, pol1, tipo2, pol2, mult)
             new_patterns = {}
             if isinstance(value, dict):
                 for effect_name, patterns in value.items():
@@ -258,8 +215,10 @@ def _restore_tuples_from_json(obj, is_multiplicity_key=False):
     Para chaves de multiplicity_color_map, tenta parsear strings JSON de volta para tuplas.
     """
     if isinstance(obj, list):
-        # Listas podem ser padrões de efeito - converter para tuplas se tiver 3 elementos
-        if len(obj) == 3 and all(isinstance(x, (str, int)) for x in obj):
+        # Listas podem ser padrões de efeito - converter para tuplas se tiver 3 ou 5 elementos
+        # Formato antigo: (tipo1, tipo2, multiplicidade) - 3 elementos
+        # Formato novo: (tipo1, polaridade1, tipo2, polaridade2, multiplicidade) - 5 elementos
+        if len(obj) in [3, 5] and all(isinstance(x, (str, int)) for x in obj):
             return tuple(obj)
         else:
             return [_restore_tuples_from_json(item, False) for item in obj]
@@ -307,7 +266,7 @@ def _deserialize_profile_from_json(profile_data: Dict) -> Dict:
         for effect_name, patterns in profile_data['effect_patterns'].items():
             if isinstance(patterns, list):
                 new_patterns[effect_name] = [
-                    tuple(pattern) if isinstance(pattern, list) and len(pattern) == 3 else pattern
+                    tuple(pattern) if isinstance(pattern, list) and len(pattern) in [3, 5] else pattern
                     for pattern in patterns
                 ]
             else:
@@ -337,48 +296,28 @@ def load_profiles() -> Dict:
         return {}
 
 
-def _convert_tuples_for_json(obj):
-    """
-    Função recursiva para converter todas as tuplas encontradas para formatos JSON-safe.
-    """
-    if isinstance(obj, tuple):
-        return list(obj)
-    elif isinstance(obj, dict):
-        new_dict = {}
-        for key, value in obj.items():
-            # Converter chaves que são tuplas para strings
-            if isinstance(key, tuple):
-                key_str = json.dumps(sorted(key), sort_keys=True)
-            elif isinstance(key, list):
-                key_str = json.dumps(sorted(key), sort_keys=True)
-            else:
-                key_str = key
-            new_dict[key_str] = _convert_tuples_for_json(value)
-        return new_dict
-    elif isinstance(obj, list):
-        return [_convert_tuples_for_json(item) for item in obj]
-    else:
-        return obj
-
-
-def save_profiles(profiles: Dict):
+def save_profiles(profiles: Dict) -> None:
     """Salva todos os perfis"""
     import os
     
-    os.makedirs('data', exist_ok=True)
+    # Criar diretório se não existir
+    os.makedirs(os.path.dirname(PROFILES_FILE), exist_ok=True)
     
-    # Converter todas as tuplas recursivamente
-    json_safe_profiles = _convert_tuples_for_json(profiles)
+    # Serializar cada perfil antes de salvar
+    serialized_profiles = {}
+    for save_id, profile in profiles.items():
+        serialized_profiles[save_id] = _serialize_profile_for_json(profile)
     
     try:
         with open(PROFILES_FILE, 'w', encoding='utf-8') as f:
-            json.dump(json_safe_profiles, f, indent=2, ensure_ascii=False)
-    except (TypeError, ValueError) as e:
+            json.dump(serialized_profiles, f, indent=2, ensure_ascii=False)
+    except Exception as e:
         print(f"Erro ao salvar perfis: {e}")
-        import traceback
-        traceback.print_exc()
-        raise
 
+
+# ============================================================================
+# VERIFICAÇÃO DE EFEITOS
+# ============================================================================
 
 def check_molecule_effects(molecule: Dict, profile: Dict) -> List[str]:
     """
@@ -400,8 +339,26 @@ def check_molecule_effects(molecule: Dict, profile: Dict) -> List[str]:
     effect_patterns = profile.get('effect_patterns', {})
     
     for effect_name, patterns in effect_patterns.items():
-        if molecule_has_effect(molecule, patterns):
-            effects.append(effect_name)
+        try:
+            # Verificar se os padrões são do formato antigo (3 elementos) ou novo (5 elementos)
+            if not patterns or len(patterns) == 0:
+                continue
+            
+            # Verificar formato do primeiro padrão
+            first_pattern = patterns[0] if patterns else None
+            
+            # Se for formato antigo (3 elementos), pular (perfis antigos precisam ser regenerados)
+            if first_pattern and len(first_pattern) == 3:
+                # Formato antigo - pular por enquanto ou tentar migrar
+                continue
+            
+            # Formato novo (5 elementos)
+            if molecule_has_effect(molecule, patterns):
+                effects.append(effect_name)
+        except Exception as e:
+            # Em caso de erro, continuar verificando outros efeitos
+            print(f"Erro ao verificar efeito {effect_name}: {e}")
+            continue
     
     return effects
 
@@ -409,6 +366,8 @@ def check_molecule_effects(molecule: Dict, profile: Dict) -> List[str]:
 def get_or_create_profile(save_id: str) -> Dict:
     """
     Obtém o perfil de um save, criando um novo se não existir.
+    Se o perfil existir mas tiver padrões antigos (formato de 3 elementos),
+    regenera o perfil com o novo formato (5 elementos com polaridade).
     
     Args:
         save_id: ID do save
@@ -418,12 +377,67 @@ def get_or_create_profile(save_id: str) -> Dict:
     """
     profiles = load_profiles()
     
+    # Verificar se precisa criar ou atualizar perfil
+    needs_regeneration = False
+    
     if save_id not in profiles:
         # Criar novo perfil
+        needs_regeneration = True
+    else:
+        # Verificar se o perfil tem padrões antigos (3 elementos) e precisa ser atualizado
+        profile = profiles[save_id]
+        effect_patterns = profile.get('effect_patterns', {})
+        
+        # Se não há padrões, precisa regenerar
+        if not effect_patterns or len(effect_patterns) == 0:
+            needs_regeneration = True
+        else:
+            # Verificar se algum padrão está no formato antigo
+            for effect_name, patterns in effect_patterns.items():
+                if not patterns:
+                    needs_regeneration = True
+                    break
+                    
+                # Converter para lista se for tupla
+                if isinstance(patterns, tuple):
+                    patterns = list(patterns)
+                
+                # Verificar se tem exatamente 3 requisitos (novo formato)
+                if isinstance(patterns, list):
+                    # Se não tem exatamente 3 requisitos, está no formato antigo
+                    if len(patterns) != 3:
+                        needs_regeneration = True
+                        break
+                    
+                    # Verificar formato de cada padrão individual
+                    for pattern in patterns:
+                        if not pattern:
+                            needs_regeneration = True
+                            break
+                        
+                        # Converter para lista se necessário
+                        pattern_list = list(pattern) if isinstance(pattern, tuple) else pattern
+                        
+                        if isinstance(pattern_list, list):
+                            # Se o padrão tem 3 elementos, está no formato antigo
+                            if len(pattern_list) == 3:
+                                needs_regeneration = True
+                                break
+                            # Se o padrão não tem exatamente 5 elementos, está no formato antigo
+                            elif len(pattern_list) != 5:
+                                needs_regeneration = True
+                                break
+                    
+                    if needs_regeneration:
+                        break
+    
+    if needs_regeneration:
+        # Gerar novo perfil com formato atualizado
         profile = generate_property_profile(save_id)
         profile['generated_at'] = __import__('datetime').datetime.now().isoformat()
         profiles[save_id] = profile
         save_profiles(profiles)
+        return profile
     
     return profiles[save_id]
 
@@ -442,10 +456,21 @@ def get_profile(save_id: str) -> Optional[Dict]:
     return profiles.get(save_id)
 
 
-def delete_profile(save_id: str):
-    """Deleta o perfil de um save"""
+def delete_profile(save_id: str) -> bool:
+    """
+    Deleta o perfil de um save.
+    
+    Args:
+        save_id: ID do save
+    
+    Returns:
+        True se deletado com sucesso, False caso contrário
+    """
     profiles = load_profiles()
+    
     if save_id in profiles:
         del profiles[save_id]
         save_profiles(profiles)
-
+        return True
+    
+    return False

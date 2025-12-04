@@ -175,8 +175,13 @@ def calculate_molecule_observable_properties(molecule, profile=None):
     
     # Calcular efeitos se perfil fornecido
     if profile:
-        from core.property_profiles import check_molecule_effects
-        result['effects'] = check_molecule_effects(molecule, profile)
+        try:
+            from core.property_profiles import check_molecule_effects
+            result['effects'] = check_molecule_effects(molecule, profile)
+        except Exception as e:
+            # Em caso de erro ao calcular efeitos, retornar lista vazia mas manter outras propriedades
+            print(f"Erro ao calcular efeitos: {e}")
+            result['effects'] = []
     else:
         result['effects'] = []
     

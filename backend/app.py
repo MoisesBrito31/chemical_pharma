@@ -622,6 +622,35 @@ def api_get_property_profile():
         }
     })
 
+@app.route('/api/properties/profile/regenerate', methods=['POST'])
+def api_regenerate_property_profile():
+    """Força a regeneração do perfil de propriedades do save ativo"""
+    from core.property_profiles import get_or_create_profile, delete_profile
+    
+    save_id = get_active_save_id()
+    if not save_id:
+        return jsonify({
+            'success': False,
+            'error': 'Nenhum save ativo'
+        }), 400
+    
+    try:
+        # Deletar perfil antigo
+        delete_profile(save_id)
+        
+        # Gerar novo perfil
+        profile = get_or_create_profile(save_id)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Perfil regenerado com sucesso'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/api/molecules/observable-properties', methods=['POST'])
 def api_get_observable_properties():
     """Retorna as propriedades observáveis de uma molécula (sabor, aparência, efeitos)"""

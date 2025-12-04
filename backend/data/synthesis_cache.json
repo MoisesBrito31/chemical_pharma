@@ -35724,5 +35724,279 @@
       "initial_count": 10,
       "annihilated_pairs": 0
     }
+  },
+  "save_5f4dccfe:disc_4b50c841+disc_a07da9ff": {
+    "success": true,
+    "result": [
+      {
+        "particles": [
+          {
+            "id": "p0",
+            "type": "circle",
+            "polarity": "+",
+            "x": -6,
+            "y": 0
+          },
+          {
+            "id": "p3",
+            "type": "square",
+            "polarity": "-",
+            "x": 6,
+            "y": 0
+          },
+          {
+            "id": "p6",
+            "type": "square",
+            "polarity": "-",
+            "x": -2,
+            "y": 0
+          },
+          {
+            "id": "p8",
+            "type": "triangle",
+            "polarity": "+",
+            "x": 2,
+            "y": 0
+          }
+        ],
+        "bonds": [
+          {
+            "from": "p3",
+            "to": "p8",
+            "multiplicity": 2
+          },
+          {
+            "from": "p6",
+            "to": "p0",
+            "multiplicity": 1
+          },
+          {
+            "from": "p6",
+            "to": "p8",
+            "multiplicity": 1
+          }
+        ]
+      },
+      {
+        "particles": [
+          {
+            "id": "p1",
+            "type": "circle",
+            "polarity": "+",
+            "x": 8,
+            "y": -1
+          },
+          {
+            "id": "p2",
+            "type": "circle",
+            "polarity": "+",
+            "x": -8,
+            "y": -1
+          },
+          {
+            "id": "p4",
+            "type": "square",
+            "polarity": "-",
+            "x": 4,
+            "y": -1
+          },
+          {
+            "id": "p5",
+            "type": "square",
+            "polarity": "-",
+            "x": -4,
+            "y": -1
+          },
+          {
+            "id": "p7",
+            "type": "square",
+            "polarity": "-",
+            "x": 0,
+            "y": 3
+          },
+          {
+            "id": "p9",
+            "type": "pentagon",
+            "polarity": "+",
+            "x": 0,
+            "y": -1
+          }
+        ],
+        "bonds": [
+          {
+            "from": "p9",
+            "to": "p4",
+            "multiplicity": 1
+          },
+          {
+            "from": "p9",
+            "to": "p5",
+            "multiplicity": 1
+          },
+          {
+            "from": "p9",
+            "to": "p7",
+            "multiplicity": 2
+          },
+          {
+            "from": "p1",
+            "to": "p4",
+            "multiplicity": 1
+          },
+          {
+            "from": "p2",
+            "to": "p5",
+            "multiplicity": 1
+          }
+        ]
+      }
+    ],
+    "multiple": true,
+    "details": {
+      "initial_count": 12,
+      "remaining_particles": 10,
+      "annihilated_pairs": 1,
+      "molecules_count": 2
+    }
+  },
+  "save_5f4dccfe:disc_4b50c841+disc_4b666a92": {
+    "success": true,
+    "result": {
+      "particles": [
+        {
+          "id": "p0",
+          "type": "circle",
+          "polarity": "+",
+          "x": -5,
+          "y": 1
+        },
+        {
+          "id": "p1",
+          "type": "circle",
+          "polarity": "+",
+          "x": -1,
+          "y": 5
+        },
+        {
+          "id": "p2",
+          "type": "square",
+          "polarity": "-",
+          "x": 3,
+          "y": -3
+        },
+        {
+          "id": "p3",
+          "type": "triangle",
+          "polarity": "+",
+          "x": -1,
+          "y": -3
+        },
+        {
+          "id": "p4",
+          "type": "triangle",
+          "polarity": "+",
+          "x": 0,
+          "y": -3
+        },
+        {
+          "id": "p5",
+          "type": "triangle",
+          "polarity": "+",
+          "x": 0,
+          "y": 3
+        },
+        {
+          "id": "p6",
+          "type": "triangle",
+          "polarity": "+",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "p7",
+          "type": "pentagon",
+          "polarity": "-",
+          "x": 0,
+          "y": -5
+        },
+        {
+          "id": "p8",
+          "type": "pentagon",
+          "polarity": "-",
+          "x": 3,
+          "y": 0
+        },
+        {
+          "id": "p9",
+          "type": "pentagon",
+          "polarity": "-",
+          "x": -3,
+          "y": 0
+        }
+      ],
+      "bonds": [
+        {
+          "from": "p0",
+          "to": "p7",
+          "multiplicity": 1
+        },
+        {
+          "from": "p1",
+          "to": "p7",
+          "multiplicity": 1
+        },
+        {
+          "from": "p7",
+          "to": "p3",
+          "multiplicity": 1
+        },
+        {
+          "from": "p2",
+          "to": "p3",
+          "multiplicity": 2
+        },
+        {
+          "from": "p8",
+          "to": "p4",
+          "multiplicity": 1
+        },
+        {
+          "from": "p8",
+          "to": "p5",
+          "multiplicity": 1
+        },
+        {
+          "from": "p8",
+          "to": "p6",
+          "multiplicity": 2
+        },
+        {
+          "from": "p9",
+          "to": "p4",
+          "multiplicity": 1
+        },
+        {
+          "from": "p9",
+          "to": "p5",
+          "multiplicity": 2
+        },
+        {
+          "from": "p9",
+          "to": "p6",
+          "multiplicity": 1
+        },
+        {
+          "from": "p4",
+          "to": "p7",
+          "multiplicity": 1
+        }
+      ]
+    },
+    "multiple": false,
+    "details": {
+      "initial_count": 12,
+      "remaining_particles": 10,
+      "annihilated_pairs": 1
+    }
   }
 }
